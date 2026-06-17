@@ -7,7 +7,6 @@ const PORT = process.env.PORT || 3000;
 const DATA_FILE = path.join(__dirname, 'data.json');
 
 app.use(express.json({ limit: '50mb' }));
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Read data
 function readData() {
@@ -36,14 +35,11 @@ app.post('/api/data', (req, res) => {
   res.json({ ok: true });
 });
 
-// Serve the main page
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'love.html'));
-});
+// Serve static files (CSS, JS, images) but NOT index.html
+app.use(express.static(path.join(__dirname, 'public'), { index: false }));
 
-// Catch-all: serve love.html for any unmatched route (SPA refresh fix)
+// All other routes → serve love.html
 app.get('*', (req, res) => {
-  // Skip API routes
   if (req.path.startsWith('/api/')) return res.status(404).json({ error: 'Not found' });
   res.sendFile(path.join(__dirname, 'public', 'love.html'));
 });
