@@ -228,7 +228,12 @@
       "text": "111",
       "images": [],
       "video": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "11",
+          "text": "22"
+        }
+      ]
     }
   ],
   "profiles": {
