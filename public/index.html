@@ -961,6 +961,8 @@ let appData = loadLocalData();
 
 // ===== 云同步：通过后端 API =====
 const API_BASE = window.location.origin;
+let syncTimer = null;
+let useCloud = false;
 
 async function saveToCloud(data) {
   try {
@@ -981,92 +983,59 @@ async function loadFromCloud() {
   return null;
 }
 
-// Save data: cloud + local (awaited)
-async function saveData(data) {
+// ===== 简单可靠的同步策略 =====
+// 规则：云端是主数据源，本地是缓存
+// 1. 任何修改 → 先存本地，然后推到云端
+// 2. 定时拉取云端 → 如果和本地不同，以云端为准
+let saveData = async function(data) {
   saveLocalData(data);
-  if (useCloud) {
-    const ok = await saveToCloud(data);
-    if (!ok) console.warn('⚠️ Cloud save failed, data only in localStorage');
-  }
-}
+  if (useCloud) await saveToCloud(data);
+};
 
-// Smart merge: keep best data from both local and cloud
-function smartMerge(local, cloud) {
-  if (!cloud || Object.keys(cloud).length === 0) return local;
-  const merged = JSON.parse(JSON.stringify(local));
-  // Merge profiles: prefer non-empty values
-  for (const person of ['wjl', 'hyf']) {
-    if (!merged.profiles) merged.profiles = {};
-    if (!merged.profiles[person]) merged.profiles[person] = {};
-    if (cloud.profiles && cloud.profiles[person]) {
-      for (const key of Object.keys(cloud.profiles[person])) {
-        const cloudVal = cloud.profiles[person][key];
-        const localVal = merged.profiles[person][key];
-        // Prefer longer/non-empty values (avatar always prefer cloud if exists)
-        if (key === 'avatar' && cloudVal && cloudVal.length > 100) {
-          merged.profiles[person][key] = cloudVal;
-        } else if (cloudVal && (!localVal || cloudVal.length > localVal.length)) {
-          merged.profiles[person][key] = cloudVal;
-        }
-      }
-    }
-  }
-  // Merge checkins: union
-  if (cloud.checkins) {
-    if (!merged.checkins) merged.checkins = {};
-    for (const d of Object.keys(cloud.checkins)) {
-      if (!merged.checkins[d]) merged.checkins[d] = cloud.checkins[d];
-    }
-  }
-  // Merge arrays: use whichever has more data (more items or richer content)
-  for (const arr of ['dishes', 'lotteryHistory', 'stories']) {
-    const cArr = Array.isArray(cloud[arr]) ? cloud[arr] : Object.values(cloud[arr] || {});
-    const lArr = Array.isArray(merged[arr]) ? merged[arr] : [];
-    const cSize = JSON.stringify(cArr).length;
-    const lSize = JSON.stringify(lArr).length;
-    // Prefer the version with more data (images etc)
-    if (cSize > lSize) merged[arr] = cArr;
-    else if (lSize > cSize) { /* keep local, it's richer */ }
-  }
-  return merged;
-}
-
-// ===== 定时云同步 =====
-let syncTimer = null;
 function startCloudSync() {
   useCloud = true;
-  let lastCloudJson = '';
-  let firstSyncDone = false;
 
-  // First: pull from cloud and merge (don't push yet)
+  // 第一步：从云端拉数据（以云端为准）
   setTimeout(async () => {
     const cloudData = await loadFromCloud();
     if (cloudData && Object.keys(cloudData).length > 0) {
-      appData = mergeWithDefaults(smartMerge(appData, cloudData));
+      const c = mergeWithDefaults(cloudData);
+      // Fix array-like objects from JSON
+      for (const k of ['dishes','lotteryHistory','stories']) {
+        if (c[k] && !Array.isArray(c[k])) c[k] = Object.values(c[k]);
+      }
+      appData = c;
       saveLocalData(appData);
       refreshAllUI();
+      console.log('📥 从云端加载数据成功');
+    } else {
+      // Cloud empty, push local
+      await saveToCloud(appData);
+      console.log('📤 云端为空，已推送本地数据');
     }
-    firstSyncDone = true;
-  }, 1000);
+  }, 500);
 
-  // Then: regular sync every 3 seconds
+  // 第二步：每5秒检查云端是否有更新
+  let lastJson = '';
   syncTimer = setInterval(async () => {
-    if (!firstSyncDone) return;
     const cloudData = await loadFromCloud();
-    if (cloudData && Object.keys(cloudData).length > 0) {
-      const cloudJson = JSON.stringify(cloudData);
-      const localJson = JSON.stringify(appData);
-
-      if (cloudJson !== lastCloudJson && cloudJson !== localJson) {
-        lastCloudJson = cloudJson;
-        appData = mergeWithDefaults(smartMerge(appData, cloudData));
-        saveLocalData(appData);
-        refreshAllUI();
+    if (!cloudData || Object.keys(cloudData).length === 0) return;
+    const cloudJson = JSON.stringify(cloudData);
+    const localJson = JSON.stringify(appData);
+    if (cloudJson !== lastJson && cloudJson !== localJson) {
+      lastJson = cloudJson;
+      const c = mergeWithDefaults(cloudData);
+      for (const k of ['dishes','lotteryHistory','stories']) {
+        if (c[k] && !Array.isArray(c[k])) c[k] = Object.values(c[k]);
       }
+      appData = c;
+      saveLocalData(appData);
+      refreshAllUI();
+      console.log('🔄 云端更新已同步');
     }
-  }, 3000);
+  }, 5000);
 
-  console.log('☁️ 云同步已启动（智能合并模式）');
+  console.log('☁️ 云同步启动（云端为主）');
 }
 
 function refreshAllUI() {
@@ -1636,7 +1605,7 @@ function uploadAvatar(person) {
     }
     // Compress image to small size before saving
     const img = new Image();
-    img.onload = function() {
+    img.onload = async function() {
       const canvas = document.createElement('canvas');
       const maxSize = 200;
       let w = img.width, h = img.height;
