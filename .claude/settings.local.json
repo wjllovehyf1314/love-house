@@ -46,7 +46,12 @@
       "PowerShell($r = Invoke-WebRequest -Uri \"https://love-house-8yko.onrender.com/\" -UseBasicParsing; Write-Host \"Status: $\\($r.StatusCode\\)\"; Write-Host \"Size: $\\($r.Content.Length\\) bytes\")",
       "PowerShell(gh api *)",
       "PowerShell(Write-Host \"等待 Render 部署...\"; for \\($i = 0; $i -lt 12; $i++\\) { Start-Sleep 5; try { $r = Invoke-WebRequest -Uri \"https://love-house-8yko.onrender.com/\" -UseBasicParsing -TimeoutSec 10; if \\($r.StatusCode -eq 200\\) { Write-Host \"✅ 第$\\($i+1\\)次检查: 状态 $\\($r.StatusCode\\) - 修复成功！\"; break } } catch { Write-Host \"第$\\($i+1\\)次: 部署中...\" } })",
-      "PowerShell(Rename-Item *)"
+      "PowerShell(Rename-Item *)",
+      "PowerShell(Write-Host \"等待部署...\"; for \\($i = 0; $i -lt 15; $i++\\) { Start-Sleep 6; try { $r = Invoke-WebRequest -Uri \"https://love-house-8yko.onrender.com/\" -UseBasicParsing -TimeoutSec 10; if \\($r.StatusCode -eq 200\\) { Write-Host \"✅ 第$\\($i+1\\)次: 部署完成，状态200\"; break } } catch { Write-Host \"第$\\($i+1\\)次: 部署中...\" } })",
+      "PowerShell(npm install *)",
+      "PowerShell(Start-Process \"https://dashboard.render.com/web/srv-all\")",
+      "PowerShell(Write-Host \"等待重启...\"; for \\($i = 0; $i -lt 20; $i++\\) { Start-Sleep 6; try { $r = Invoke-WebRequest -Uri \"https://love-house-8yko.onrender.com/\" -UseBasicParsing -TimeoutSec 10; if \\($r.StatusCode -eq 200\\) { Write-Host \"✅ 在线\"; $api = Invoke-WebRequest -Uri \"https://love-house-8yko.onrender.com/api/data\" -UseBasicParsing -Headers @{\"Accept\"=\"application/json\"}; Write-Host \"API: $\\($api.Content\\)\"; break } } catch { Write-Host \"第$\\($i+1\\)次: 等待中...\" } })",
+      "PowerShell($body = '{\"checkins\":{\"2026-02-11\":true},\"dishes\":[],\"lotteryHistory\":[],\"stories\":[],\"profiles\":{\"wjl\":{\"name\":\"王俊龙\"},\"hyf\":{\"name\":\"贺一帆\"}}}'; $r = Invoke-WebRequest -Uri \"https://love-house-8yko.onrender.com/api/data\" -Method POST -Body $body -ContentType \"application/json\" -UseBasicParsing; Write-Host \"保存: $\\($r.Content\\)\"; Start-Sleep 2; $r2 = Invoke-WebRequest -Uri \"https://love-house-8yko.onrender.com/api/data\" -UseBasicParsing -Headers @{\"Accept\"=\"application/json\"}; Write-Host \"读取: $\\($r2.Content\\)\")"
     ]
   }
 }

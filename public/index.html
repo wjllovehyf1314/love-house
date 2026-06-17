@@ -964,12 +964,13 @@ const API_BASE = window.location.origin;
 
 async function saveToCloud(data) {
   try {
-    await fetch(API_BASE + '/api/data', {
+    const res = await fetch(API_BASE + '/api/data', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-  } catch (e) { console.log('Cloud save failed'); }
+    return res.ok;
+  } catch (e) { return false; }
 }
 
 async function loadFromCloud() {
@@ -980,8 +981,9 @@ async function loadFromCloud() {
   return null;
 }
 
-// Save data: cloud + local
+// Save data: cloud + local (with timestamp)
 function saveData(data) {
+  data._updated = Date.now();
   saveLocalData(data);
   if (useCloud) saveToCloud(data);
 }
@@ -991,28 +993,30 @@ let syncTimer = null;
 function startCloudSync() {
   useCloud = true;
 
-  // Pull from cloud every 3 seconds
   syncTimer = setInterval(async () => {
     const cloudData = await loadFromCloud();
-    if (cloudData && Object.keys(cloudData).length > 0) {
+    if (cloudData && Object.keys(cloudData).length > 1) {
       const merged = mergeWithDefaults(cloudData);
       if (!merged.dishes || !Array.isArray(merged.dishes)) merged.dishes = Object.values(merged.dishes || {});
       if (!merged.lotteryHistory || !Array.isArray(merged.lotteryHistory)) merged.lotteryHistory = Object.values(merged.lotteryHistory || {});
       if (!merged.stories || !Array.isArray(merged.stories)) merged.stories = Object.values(merged.stories || {});
 
-      const oldData = JSON.stringify(appData);
-      const newData = JSON.stringify(merged);
-      if (oldData !== newData) {
+      // Only sync if cloud is newer than local
+      const cloudTime = cloudData._updated || 0;
+      const localTime = appData._updated || 0;
+      if (cloudTime > localTime) {
         appData = merged;
         saveLocalData(appData);
         refreshAllUI();
+      } else if (localTime > cloudTime) {
+        // Local is newer, push to cloud
+        saveToCloud(appData);
       }
     }
   }, 3000);
 
-  // Push local data to cloud immediately
   saveToCloud(appData);
-  console.log('☁️ 云同步已启动');
+  console.log('☁️ 云同步已启动（智能版本控制）');
 }
 
 function refreshAllUI() {
@@ -1569,18 +1573,29 @@ function uploadAvatar(person) {
   input.onchange = function(e) {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      showToast('⚠️ 图片不能超过5MB');
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('⚠️ 图片不能超过10MB');
       return;
     }
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-      appData.profiles[person].avatar = ev.target.result;
+    // Compress image to small size before saving
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const maxSize = 200;
+      let w = img.width, h = img.height;
+      if (w > h) { if (w > maxSize) { h *= maxSize / w; w = maxSize; } }
+      else { if (h > maxSize) { w *= maxSize / h; h = maxSize; } }
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      const compressed = canvas.toDataURL('image/jpeg', 0.7);
+      appData.profiles[person].avatar = compressed;
       saveData(appData);
+      saveToCloud(appData); // Force immediate cloud save
       renderProfiles();
       showToast('✅ 头像已更新！');
     };
-    reader.readAsDataURL(file);
+    img.src = URL.createObjectURL(file);
   };
   input.click();
 }
