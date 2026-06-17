@@ -989,7 +989,13 @@ async function loadFromCloud() {
 // 2. 定时拉取云端 → 如果和本地不同，以云端为准
 let saveData = async function(data) {
   saveLocalData(data);
-  if (useCloud) await saveToCloud(data);
+  if (useCloud) {
+    const ok = await saveToCloud(data);
+    if (!ok) {
+      console.warn('⚠️ 云端保存失败，数据仅保存在本地');
+      showToast('⚠️ 云端暂未同步，请稍后重试');
+    }
+  }
 };
 
 function startCloudSync() {
@@ -1487,13 +1493,13 @@ function compressImage(file) {
     img.onload = function() {
       try {
         const canvas = document.createElement('canvas');
-        const maxSize = 800;
+        const maxSize = 300;
         let w = img.width, h = img.height;
         if (w > h) { if (w > maxSize) { h *= maxSize / w; w = maxSize; } }
         else { if (h > maxSize) { w *= maxSize / h; h = maxSize; } }
         canvas.width = w; canvas.height = h;
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        resolve(canvas.toDataURL('image/jpeg', 0.6));
+        resolve(canvas.toDataURL('image/jpeg', 0.5));
       } catch(e) { reject(e); }
     };
     img.onerror = function() { reject(new Error('图片加载失败')); };
@@ -1623,14 +1629,14 @@ function uploadAvatar(person) {
     const img = new Image();
     img.onload = async function() {
       const canvas = document.createElement('canvas');
-      const maxSize = 200;
+      const maxSize = 150;
       let w = img.width, h = img.height;
       if (w > h) { if (w > maxSize) { h *= maxSize / w; w = maxSize; } }
       else { if (h > maxSize) { w *= maxSize / h; h = maxSize; } }
       canvas.width = w; canvas.height = h;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, w, h);
-      const compressed = canvas.toDataURL('image/jpeg', 0.7);
+      const compressed = canvas.toDataURL('image/jpeg', 0.5);
       appData.profiles[person].avatar = compressed;
       await saveData(appData);
       renderProfiles();
