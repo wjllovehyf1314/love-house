@@ -41,6 +41,13 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'love.html'));
 });
 
+// Catch-all: serve love.html for any unmatched route (SPA refresh fix)
+app.get('*', (req, res) => {
+  // Skip API routes
+  if (req.path.startsWith('/api/')) return res.status(404).json({ error: 'Not found' });
+  res.sendFile(path.join(__dirname, 'public', 'love.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`💕 恋爱小屋启动！ http://localhost:${PORT}`);
 });
