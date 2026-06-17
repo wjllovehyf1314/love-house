@@ -981,42 +981,76 @@ async function loadFromCloud() {
   return null;
 }
 
-// Save data: cloud + local (with timestamp)
+// Save data: cloud + local
 function saveData(data) {
-  data._updated = Date.now();
   saveLocalData(data);
   if (useCloud) saveToCloud(data);
+}
+
+// Smart merge: keep best data from both local and cloud
+function smartMerge(local, cloud) {
+  if (!cloud || Object.keys(cloud).length === 0) return local;
+  const merged = JSON.parse(JSON.stringify(local));
+  // Merge profiles: prefer non-empty values
+  for (const person of ['wjl', 'hyf']) {
+    if (!merged.profiles) merged.profiles = {};
+    if (!merged.profiles[person]) merged.profiles[person] = {};
+    if (cloud.profiles && cloud.profiles[person]) {
+      for (const key of Object.keys(cloud.profiles[person])) {
+        const cloudVal = cloud.profiles[person][key];
+        const localVal = merged.profiles[person][key];
+        // Prefer longer/non-empty values (avatar always prefer cloud if exists)
+        if (key === 'avatar' && cloudVal && cloudVal.length > 100) {
+          merged.profiles[person][key] = cloudVal;
+        } else if (cloudVal && (!localVal || cloudVal.length > localVal.length)) {
+          merged.profiles[person][key] = cloudVal;
+        }
+      }
+    }
+  }
+  // Merge checkins: union
+  if (cloud.checkins) {
+    if (!merged.checkins) merged.checkins = {};
+    for (const d of Object.keys(cloud.checkins)) {
+      if (!merged.checkins[d]) merged.checkins[d] = cloud.checkins[d];
+    }
+  }
+  // Merge arrays: use whichever is longer
+  for (const arr of ['dishes', 'lotteryHistory', 'stories']) {
+    const cArr = Array.isArray(cloud[arr]) ? cloud[arr] : Object.values(cloud[arr] || {});
+    const lArr = Array.isArray(merged[arr]) ? merged[arr] : [];
+    if (cArr.length > lArr.length) merged[arr] = cArr;
+  }
+  return merged;
 }
 
 // ===== 定时云同步 =====
 let syncTimer = null;
 function startCloudSync() {
   useCloud = true;
+  let lastCloudJson = '';
 
   syncTimer = setInterval(async () => {
     const cloudData = await loadFromCloud();
-    if (cloudData && Object.keys(cloudData).length > 1) {
-      const merged = mergeWithDefaults(cloudData);
-      if (!merged.dishes || !Array.isArray(merged.dishes)) merged.dishes = Object.values(merged.dishes || {});
-      if (!merged.lotteryHistory || !Array.isArray(merged.lotteryHistory)) merged.lotteryHistory = Object.values(merged.lotteryHistory || {});
-      if (!merged.stories || !Array.isArray(merged.stories)) merged.stories = Object.values(merged.stories || {});
+    if (cloudData && Object.keys(cloudData).length > 0) {
+      const cloudJson = JSON.stringify(cloudData);
+      const localJson = JSON.stringify(appData);
 
-      // Only sync if cloud is newer than local
-      const cloudTime = cloudData._updated || 0;
-      const localTime = appData._updated || 0;
-      if (cloudTime > localTime) {
-        appData = merged;
+      // Only act if cloud changed or local is different
+      if (cloudJson !== lastCloudJson && cloudJson !== localJson) {
+        lastCloudJson = cloudJson;
+        // Smart merge: combine best of both
+        appData = mergeWithDefaults(smartMerge(appData, cloudData));
         saveLocalData(appData);
+        saveToCloud(appData);  // Push merged result back so everyone is in sync
         refreshAllUI();
-      } else if (localTime > cloudTime) {
-        // Local is newer, push to cloud
-        saveToCloud(appData);
       }
     }
-  }, 3000);
+  }, 2000);
 
+  // Initial push
   saveToCloud(appData);
-  console.log('☁️ 云同步已启动（智能版本控制）');
+  console.log('☁️ 云同步已启动（智能合并模式）');
 }
 
 function refreshAllUI() {
