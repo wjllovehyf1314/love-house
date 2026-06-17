@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Invoke-WebRequest -Uri \"https://api.github.com/repos/obra/superpowers/zipball/v5.1.0\" -OutFile \"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\superpowers-v5.1.0.zip\" -ErrorAction Stop; if \\($?\\) { Write-Host \"Download complete: $\\(\\(Get-Item 'C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\superpowers-v5.1.0.zip'\\).Length\\) bytes\" })",
+      "PowerShell(if \\(Test-Path \"$env:USERPROFILE\\\\.claude\"\\) { Write-Host \".claude directory exists\"; Get-ChildItem \"$env:USERPROFILE\\\\.claude\" -Directory | ForEach-Object { Write-Host \"  DIR: $\\($_.Name\\)\" } } else { Write-Host \".claude directory does not exist\" }; if \\(Test-Path \"$env:USERPROFILE\\\\.claude\\\\plugins\"\\) { Write-Host \"plugins directory exists\"; Get-ChildItem \"$env:USERPROFILE\\\\.claude\\\\plugins\" -Directory | ForEach-Object { Write-Host \"  PLUGIN: $\\($_.Name\\)\" } } else { Write-Host \"plugins directory does not exist\" })",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(Copy-Item *)",
+      "PowerShell(Remove-Item *)",
+      "PowerShell(if \\(Get-Command \"C:\\\\Program Files\\\\Git\\\\bin\\\\bash.exe\" -ErrorAction SilentlyContinue\\) { Write-Host \"Git Bash found at: C:\\\\Program Files\\\\Git\\\\bin\\\\bash.exe\"; bash --version | Select-Object -First 1 } elseif \\(Get-Command \"C:\\\\Program Files \\(x86\\)\\\\Git\\\\bin\\\\bash.exe\" -ErrorAction SilentlyContinue\\) { Write-Host \"Git Bash found at: C:\\\\Program Files \\(x86\\)\\\\Git\\\\bin\\\\bash.exe\" } elseif \\(Get-Command \"bash\" -ErrorAction SilentlyContinue\\) { Write-Host \"bash found on PATH at: $\\(Get-Command bash\\).Source\" } else { Write-Host \"WARNING: No bash found. SessionStart hook will not work.\" })",
+      "WebFetch(domain:api.github.com)",
+      "PowerShell(Invoke-WebRequest -Uri \"https://github.com/git-for-windows/git/releases/download/v2.54.0.windows.1/Git-2.54.0-64-bit.exe\" -OutFile \"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\Git-2.54.0-64-bit.exe\" -ErrorAction Stop; if \\($?\\) { $file = Get-Item \"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\Git-2.54.0-64-bit.exe\"; Write-Host \"Download complete: $\\([math]::Round\\($file.Length/1MB, 1\\)\\) MB\" })",
+      "PowerShell(if \\(Test-Path \"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\Git-2.54.0-64-bit.exe\"\\) { $f = Get-Item \"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\Git-2.54.0-64-bit.exe\"; Write-Host \"Current size: $\\([math]::Round\\($f.Length/1MB, 1\\)\\) MB\" } else { Write-Host \"File not created yet\" })",
+      "PowerShell(Write-Host \"=== day1 directory ===\"; Get-ChildItem \"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\" -Force | ForEach-Object { Write-Host \"  $\\($_.Name\\)\" }; Write-Host \"`n=== superpowers plugin ===\"; if \\(Test-Path \"$env:USERPROFILE\\\\.claude\\\\plugins\\\\superpowers\"\\) { Write-Host \"Still installed at ~/.claude/plugins/superpowers\" } else { Write-Host \"NOT found - plugin was deleted\" })",
+      "WebFetch(domain:github.com)",
+      "PowerShell(claude *)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(try { $word = New-Object -ComObject Word.Application; $word.Version; $word.Quit\\(\\) } catch { Write-Output \"Word COM not available\" })",
+      "WebSearch",
+      "PowerShell(Start-Process \"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\love.html\")",
+      "PowerShell(\\(Get-Item \"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\images.jpg\"\\).Length; \\(Get-Item \"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\images.jpg\"\\).LastWriteTime)",
+      "PowerShell(Start-Process \"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\images.jpg\")",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\(\"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\images.jpg\"\\); $img.Save\\(\"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\images.png\", [System.Drawing.Imaging.ImageFormat]::Png\\); $img.Dispose\\(\\))",
+      "PowerShell($img = [System.Drawing.Image]::FromFile\\(\"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\images.jpg\"\\); Write-Host \"Width: $\\($img.Width\\)\"; Write-Host \"Height: $\\($img.Height\\)\"; Write-Host \"Format: $\\($img.RawFormat\\)\"; $img.Dispose\\(\\))",
+      "PowerShell($bytes = [System.IO.File]::ReadAllBytes\\(\"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\images.jpg\"\\); $hex = \\($bytes[0..15] | ForEach-Object { $_.ToString\\('X2'\\) }\\) -join ' '; Write-Host \"Header: $hex\"; Write-Host \"Size: $\\($bytes.Length\\) bytes\")",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\(\"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\images.jpg\"\\); $bmp = New-Object System.Drawing.Bitmap\\($img\\); $bmp.Save\\(\"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\images_big.png\", [System.Drawing.Imaging.ImageFormat]::Png\\); Write-Host \"Width: $\\($img.Width\\) Height: $\\($img.Height\\)\"; $img.Dispose\\(\\); $bmp.Dispose\\(\\); \\(Get-Item \"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\images_big.png\"\\).Length)",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\(\"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\images.jpg\"\\); $bmp = New-Object System.Drawing.Bitmap\\(227, 222\\); $g = [System.Drawing.Graphics]::FromImage\\($bmp\\); $g.DrawImage\\($img, 0, 0, 227, 222\\); $g.Dispose\\(\\); $bmp.Save\\(\"C:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\ref.png\", [System.Drawing.Imaging.ImageFormat]::Png\\); $img.Dispose\\(\\); $bmp.Dispose\\(\\); Write-Host \"Done: ref.png created\")",
+      "PowerShell($word = New-Object -ComObject Word.Application; $doc = $word.Documents.Open\\(\"c:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\人机协同下智能费用报销内部控制研究.docx\"\\); $doc.Content.Text; $doc.Close\\(\\); $word.Quit\\(\\))",
+      "PowerShell(pip install *)",
+      "PowerShell($f = Get-Item \"c:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\选题论证报告_数据资产内控.docx\"; \"文件: $\\($f.Name\\)\"; \"大小: $\\([math]::Round\\($f.Length/1KB,1\\)\\) KB\"; \"生成时间: $\\($f.LastWriteTime\\)\")",
+      "PowerShell($f = Get-Item \"c:\\\\Users\\\\Hose\\\\Desktop\\\\day1\\\\六个选题方案推荐.docx\"; \"文件: $\\($f.Name\\)\"; \"大小: $\\([math]::Round\\($f.Length/1KB,1\\)\\) KB\")",
+      "PowerShell(Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -notmatch 'Loopback' -and $_.IPAddress -notmatch '^169\\\\.' -and $_.PrefixOrigin -ne 'WellKnown' } | Select-Object IPAddress, InterfaceAlias)",
+      "PowerShell(New-Item *)",
+      "PowerShell(Start-Sleep 1; $r = Invoke-WebRequest -Uri \"http://localhost:3000/api/data\" -UseBasicParsing; $r.Content)",
+      "PowerShell(Start-Process \"http://localhost:3000\")",
+      "PowerShell(gh *)",
+      "PowerShell(winget install *)"
+    ]
+  }
+}

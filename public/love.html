@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>王俊龙 ❤️ 贺一帆 - 我们的恋爱小屋</title>
+<style>
+/* ========== CSS Variables & Reset ========== */
+:root {
+  --pink: #ff6b9d;
+  --pink-light: #ffb3cc;
+  --pink-dark: #e84a7a;
+  --rose: #ff8fab;
+  --white: #fff;
+  --bg: #fff5f7;
+  --card: #ffffff;
+  --text: #5a3e4b;
+  --text-light: #8e6f7a;
+  --gold: #f0c060;
+  --shadow: 0 4px 20px rgba(255, 107, 157, 0.15);
+  --radius: 20px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(255, 107, 157, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(255, 143, 171, 0.05) 0%, transparent 50%);
+}
+
+/* ========== Floating Hearts Background ========== */
+.hearts-bg {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0; overflow: hidden;
+}
+.heart-float {
+  position: absolute; bottom: -100px;
+  animation: floatUp 8s ease-in infinite;
+  font-size: 24px; opacity: 0.3;
+}
+@keyframes floatUp {
+  0% { transform: translateY(0) rotate(0deg) scale(0.5); opacity: 0; }
+  10% { opacity: 0.3; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(-110vh) rotate(360deg) scale(1); opacity: 0; }
+}
+
+/* ========== Main Container ========== */
+.app-container {
+  position: relative; z-index: 1;
+  max-width: 500px; margin: 0 auto;
+  min-height: 100vh; padding-bottom: 100px;
+}
+
+/* ========== Header ========== */
+.header {
+  text-align: center; padding: 30px 20px 20px;
+  position: relative;
+}
+.header-mascots {
+  display: flex; justify-content: center; align-items: center;
+  gap: 16px; margin-bottom: 10px;
+}
+.mascot {
+  width: 60px; height: 60px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; animation: bounce 2s ease-in-out infinite;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+.mascot.yier { background: linear-gradient(135deg, #ffe0b2, #ffcc80); animation-delay: 0s; }
+.mascot.bubu { background: linear-gradient(135deg, #f8bbd0, #f48fb1); animation-delay: 0.3s; }
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.header h1 {
+  font-size: 28px; font-weight: 800;
+  background: linear-gradient(135deg, #ff6b9d, #e84a7a, #ff4081);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 2px;
+}
+.header .subtitle {
+  font-size: 14px; color: var(--text-light); margin-top: 4px;
+}
+.header .hearts-icon { font-size: 20px; animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+/* ========== Navigation ========== */
+.nav {
+  display: flex; justify-content: space-around;
+  background: var(--card); margin: 0 16px;
+  border-radius: 30px; padding: 6px;
+  box-shadow: var(--shadow); position: sticky; top: 10px; z-index: 100;
+}
+.nav-btn {
+  flex: 1; padding: 12px 6px; border: none; background: transparent;
+  border-radius: 26px; cursor: pointer; font-size: 13px; font-weight: 600;
+  color: var(--text-light); transition: var(--transition);
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.nav-btn .nav-icon { font-size: 20px; }
+.nav-btn.active {
+  background: linear-gradient(135deg, #ff6b9d, #ff8fab);
+  color: white; box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3);
+}
+
+/* ========== Sections ========== */
+.section { display: none; padding: 20px 16px; animation: fadeIn 0.4s ease; }
+.section.active { display: block; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== Card ========== */
+.card {
+  background: var(--card); border-radius: var(--radius);
+  padding: 24px 20px; margin-bottom: 16px;
+  box-shadow: var(--shadow); transition: var(--transition);
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255, 107, 157, 0.2); }
+.card-title {
+  font-size: 18px; font-weight: 700; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.card-title .icon { font-size: 24px; }
+
+/* ========== Days Counter ========== */
+.days-counter-card {
+  background: linear-gradient(135deg, #ff6b9d, #ff4081);
+  color: white; text-align: center; padding: 30px 20px;
+}
+.days-counter-card .label {
+  font-size: 15px; opacity: 0.9; letter-spacing: 2px;
+}
+.days-number {
+  font-size: 72px; font-weight: 900;
+  line-height: 1; margin: 10px 0;
+  text-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  animation: countIn 0.6s ease-out;
+}
+@keyframes countIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.days-counter-card .unit {
+  font-size: 18px; opacity: 0.9;
+}
+.days-counter-card .start-date {
+  font-size: 13px; opacity: 0.7; margin-top: 8px;
+}
+
+/* ========== Calendar ========== */
+.calendar-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px;
+}
+.calendar-header button {
+  background: none; border: none; font-size: 20px; cursor: pointer;
+  color: var(--pink); padding: 4px 10px; border-radius: 10px;
+  transition: var(--transition);
+}
+.calendar-header button:hover { background: rgba(255,107,157,0.1); }
+.calendar-month { font-size: 16px; font-weight: 700; }
+.calendar-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 6px; text-align: center;
+}
+.calendar-day-name {
+  font-size: 12px; color: var(--text-light); font-weight: 600;
+  padding: 8px 0;
+}
+.calendar-day {
+  aspect-ratio: 1; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; cursor: pointer; transition: var(--transition);
+  position: relative; border: none; background: transparent;
+  font-family: inherit; color: var(--text);
+}
+.calendar-day:hover { background: rgba(255,107,157,0.1); }
+.calendar-day.today {
+  border: 2px solid var(--pink); font-weight: 700;
+}
+.calendar-day.checked {
+  background: linear-gradient(135deg, #ff6b9d, #ff8fab);
+  color: white; font-weight: 700;
+  animation: popIn 0.3s ease;
+}
+@keyframes popIn {
+  0% { transform: scale(0.5); }
+  70% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+.calendar-day.other-month { color: #ddd; cursor: default; }
+.calendar-day.past-unchecked {
+  color: #ccc;
+}
+.checkin-streak {
+  text-align: center; margin-top: 14px;
+  font-size: 14px; color: var(--pink);
+  font-weight: 600;
+}
+.checkin-btn {
+  display: block; margin: 16px auto 0;
+  padding: 12px 36px; border: none;
+  background: linear-gradient(135deg, #ff6b9d, #ff4081);
+  color: white; font-size: 16px; font-weight: 700;
+  border-radius: 30px; cursor: pointer;
+  transition: var(--transition); letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(255, 107, 157, 0.35);
+}
+.checkin-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(255, 107, 157, 0.45); }
+.checkin-btn:active { transform: scale(0.95); }
+.checkin-btn:disabled {
+  background: #ccc; cursor: not-allowed; box-shadow: none;
+}
+.checkin-btn:disabled:hover { transform: none; }
+
+/* ========== Love Quote Modal ========== */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5); z-index: 999;
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+.love-quote-card {
+  background: white; border-radius: 24px;
+  padding: 40px 30px; margin: 20px;
+  text-align: center; max-width: 380px; width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  position: relative; animation: slideUp 0.4s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.love-quote-card .quote-icon {
+  font-size: 50px; margin-bottom: 16px;
+}
+.love-quote-card .quote-text {
+  font-size: 20px; font-weight: 700; color: #5a3e4b;
+  line-height: 1.8; margin-bottom: 10px;
+}
+.love-quote-card .quote-from {
+  font-size: 13px; color: #aaa;
+}
+.love-quote-card .close-btn {
+  position: absolute; top: 12px; right: 16px;
+  background: #f5f5f5; border: none; width: 32px; height: 32px;
+  border-radius: 50%; font-size: 18px; cursor: pointer;
+  color: #999; transition: var(--transition);
+}
+.love-quote-card .close-btn:hover { background: #eee; }
+.sparkles {
+  position: absolute; pointer-events: none;
+}
+.sparkle {
+  position: absolute; font-size: 20px;
+  animation: sparkleBurst 0.8s ease-out forwards;
+}
+@keyframes sparkleBurst {
+  0% { transform: translate(0,0) scale(0); opacity: 1; }
+  100% { transform: translate(var(--sx), var(--sy)) scale(1.2); opacity: 0; }
+}
+
+/* ========== Food Section ========== */
+.food-subnav {
+  display: flex; gap: 8px; margin-bottom: 16px;
+  overflow-x: auto; padding-bottom: 4px;
+}
+.food-subnav button {
+  flex-shrink: 0; padding: 10px 18px; border: 2px solid #f0d0d8;
+  background: white; border-radius: 25px; cursor: pointer;
+  font-size: 14px; font-weight: 600; color: var(--text);
+  transition: var(--transition);
+}
+.food-subnav button.active {
+  background: linear-gradient(135deg, #ff6b9d, #ff8fab);
+  color: white; border-color: transparent;
+}
+.food-sub-panel { display: none; animation: fadeIn 0.3s ease; }
+.food-sub-panel.active { display: block; }
+
+/* Homemade dishes */
+.dish-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+}
+.dish-card {
+  background: white; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06); cursor: pointer;
+  transition: var(--transition);
+}
+.dish-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+.dish-img {
+  height: 120px; display: flex; align-items: center; justify-content: center;
+  font-size: 56px;
+}
+.dish-info { padding: 12px; }
+.dish-info .dish-name { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
+.dish-info .dish-chef { font-size: 12px; color: var(--text-light); }
+.dish-info .dish-tags { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+.dish-tag {
+  font-size: 10px; padding: 3px 8px; border-radius: 10px;
+  background: #fff0f3; color: var(--pink); font-weight: 500;
+}
+.add-dish-btn {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; margin-top: 12px; padding: 14px;
+  border: 2px dashed #f0c0d0; border-radius: 16px;
+  background: transparent; cursor: pointer; color: var(--pink);
+  font-size: 14px; font-weight: 600; width: 100%;
+  transition: var(--transition);
+}
+.add-dish-btn:hover { background: #fff0f3; }
+
+/* Takeout Lottery */
+.lottery-container { text-align: center; }
+.lottery-display {
+  background: linear-gradient(135deg, #fff5f7, #ffe0e8);
+  border-radius: 20px; padding: 30px; margin-bottom: 20px;
+  min-height: 120px; display: flex; align-items: center;
+  justify-content: center;
+  position: relative; overflow: hidden;
+}
+.lottery-text {
+  font-size: 28px; font-weight: 800; color: var(--pink-dark);
+  transition: all 0.1s ease;
+}
+.lottery-text.rolling { animation: lotteryRoll 0.08s steps(1) infinite; }
+@keyframes lotteryRoll {
+  0% { opacity: 1; transform: translateY(0); }
+  50% { opacity: 0.5; transform: translateY(-5px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.lottery-emoji { font-size: 60px; margin-bottom: 10px; }
+.lottery-btn {
+  padding: 16px 50px; border: none;
+  background: linear-gradient(135deg, #ff6b9d, #ff4081);
+  color: white; font-size: 18px; font-weight: 700;
+  border-radius: 30px; cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 15px rgba(255, 107, 157, 0.35);
+  letter-spacing: 2px;
+}
+.lottery-btn:hover { transform: scale(1.05); }
+.lottery-btn:active { transform: scale(0.95); }
+.lottery-history {
+  margin-top: 16px; text-align: left;
+}
+.lottery-history h4 { font-size: 14px; color: var(--text-light); margin-bottom: 8px; }
+.lottery-history-item {
+  display: inline-block; padding: 6px 14px; margin: 3px;
+  background: #f5f5f5; border-radius: 15px; font-size: 13px;
+}
+
+/* Snacks */
+.snack-categories { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.snack-cat-btn {
+  padding: 8px 16px; border: 1.5px solid #f0d0d8;
+  background: white; border-radius: 20px; cursor: pointer;
+  font-size: 13px; transition: var(--transition); color: var(--text);
+}
+.snack-cat-btn.active {
+  background: var(--pink); color: white; border-color: var(--pink);
+}
+.snack-list { display: flex; flex-direction: column; gap: 8px; }
+.snack-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; background: white; border-radius: 14px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04); transition: var(--transition);
+}
+.snack-item:hover { transform: translateX(4px); }
+.snack-emoji { font-size: 32px; }
+.snack-name { font-weight: 600; font-size: 15px; }
+.snack-brand { font-size: 12px; color: var(--text-light); }
+
+/* ========== Story Section ========== */
+.timeline {
+  position: relative; padding-left: 30px;
+}
+.timeline::before {
+  content: ''; position: absolute; left: 12px; top: 0; bottom: 0;
+  width: 2px; background: linear-gradient(to bottom, #ff6b9d, #ffb3cc);
+}
+.story-item {
+  position: relative; margin-bottom: 24px;
+  background: white; border-radius: 16px; padding: 18px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  animation: fadeIn 0.3s ease;
+}
+.story-item::before {
+  content: ''; position: absolute; left: -23px; top: 20px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--pink); border: 3px solid white;
+  box-shadow: 0 0 0 2px var(--pink-light);
+}
+.story-date {
+  font-size: 12px; color: var(--pink); font-weight: 600; margin-bottom: 6px;
+}
+.story-text {
+  font-size: 15px; line-height: 1.7; color: var(--text);
+  white-space: pre-wrap; word-break: break-word;
+}
+.story-images {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;
+}
+.story-images img {
+  width: 80px; height: 80px; object-fit: cover;
+  border-radius: 12px; cursor: pointer;
+  transition: var(--transition);
+}
+.story-images img:hover { transform: scale(1.05); }
+.story-video {
+  width: 100%; max-width: 300px; border-radius: 12px; margin-top: 10px;
+}
+.story-actions {
+  display: flex; gap: 10px; margin-top: 10px;
+}
+.story-actions button {
+  padding: 6px 14px; border: none; background: #fff0f3;
+  color: var(--pink); border-radius: 15px; cursor: pointer;
+  font-size: 12px; font-weight: 600; transition: var(--transition);
+}
+.story-actions button:hover { background: #ffe0e8; }
+.story-comments {
+  margin-top: 10px; padding-top: 10px;
+  border-top: 1px solid #f5f0f0;
+}
+.story-comment {
+  font-size: 13px; padding: 4px 0; color: var(--text-light);
+  display: flex; align-items: flex-start; gap: 6px;
+}
+.story-comment .comment-author { font-weight: 600; color: var(--pink); flex-shrink: 0; }
+.add-story-btn {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; width: 100%; padding: 16px;
+  border: 2px dashed #f0c0d0; border-radius: 16px;
+  background: transparent; cursor: pointer; color: var(--pink);
+  font-size: 15px; font-weight: 600; transition: var(--transition);
+}
+.add-story-btn:hover { background: #fff0f3; }
+
+/* ========== Add Story Form ========== */
+.form-card { display: none; margin-bottom: 16px; }
+.form-card.show { display: block; animation: fadeIn 0.3s ease; }
+.form-group { margin-bottom: 14px; }
+.form-group label {
+  display: block; font-size: 14px; font-weight: 600;
+  margin-bottom: 6px; color: var(--text);
+}
+.form-group textarea, .form-group input[type="text"], .form-group input[type="date"] {
+  width: 100%; padding: 12px 14px; border: 2px solid #f0d8e0;
+  border-radius: 14px; font-size: 14px; font-family: inherit;
+  resize: vertical; transition: var(--transition);
+  background: #fffafb; color: var(--text);
+}
+.form-group textarea:focus, .form-group input:focus {
+  outline: none; border-color: var(--pink);
+}
+.form-group textarea { min-height: 80px; }
+.form-group input[type="file"] { font-size: 13px; }
+.form-actions { display: flex; gap: 10px; }
+.form-actions button {
+  flex: 1; padding: 12px; border: none; border-radius: 25px;
+  font-size: 14px; font-weight: 700; cursor: pointer; transition: var(--transition);
+}
+.btn-primary {
+  background: linear-gradient(135deg, #ff6b9d, #ff4081);
+  color: white;
+}
+.btn-secondary {
+  background: #f5f5f5; color: var(--text);
+}
+.btn-danger {
+  background: #fff0f0; color: #e74c3c;
+}
+
+/* ========== Profile Section ========== */
+.profiles-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.profile-card {
+  background: white; border-radius: 20px; padding: 20px 16px;
+  text-align: center; box-shadow: var(--shadow);
+  position: relative; overflow: hidden;
+}
+.profile-card.wjl { border-top: 4px solid #ff6b9d; }
+.profile-card.hyf { border-top: 4px solid #f0c040; }
+.profile-avatar {
+  width: 80px; height: 80px; border-radius: 50%;
+  margin: 0 auto 10px; display: flex; align-items: center;
+  justify-content: center; font-size: 46px; cursor: pointer;
+  overflow: hidden; position: relative;
+  transition: var(--transition);
+}
+.profile-avatar:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(0,0,0,0.12); }
+.profile-avatar.wjl-avatar { background: linear-gradient(135deg, #ffe0e8, #ffb3cc); }
+.profile-avatar.hyf-avatar { background: linear-gradient(135deg, #dbe8f8, #b3cde8); }
+.profile-avatar img {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+  position: absolute; top: 0; left: 0;
+}
+.avatar-placeholder { position: relative; z-index: 1; pointer-events: none; }
+.profile-name {
+  font-size: 18px; font-weight: 800; margin-bottom: 4px;
+}
+.profile-role { font-size: 12px; color: var(--text-light); margin-bottom: 12px; }
+.profile-fields { text-align: left; }
+.profile-field {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0; border-bottom: 1px solid #f8f0f0;
+  font-size: 13px;
+}
+.profile-field .field-label { color: var(--text-light); font-weight: 500; }
+.profile-field .field-value { font-weight: 600; cursor: pointer; }
+.profile-field .field-value:hover { color: var(--pink); }
+.edit-profile-btn {
+  margin-top: 12px; padding: 8px 20px; border: 2px solid #f0d0d8;
+  background: white; border-radius: 20px; cursor: pointer;
+  font-size: 13px; font-weight: 600; color: var(--pink);
+  transition: var(--transition); width: 100%;
+}
+.edit-profile-btn:hover { background: #fff0f3; }
+.edit-profile-form {
+  display: none; margin-top: 10px; text-align: left;
+}
+.edit-profile-form.show { display: block; }
+.edit-profile-form input {
+  width: 100%; padding: 8px 10px; margin-bottom: 8px;
+  border: 1.5px solid #f0d0d8; border-radius: 10px;
+  font-size: 13px; font-family: inherit; background: #fffafb;
+  color: var(--text);
+}
+.edit-profile-form input:focus { outline: none; border-color: var(--pink); }
+.edit-profile-form .save-btn {
+  width: 100%; padding: 8px; border: none;
+  background: var(--pink); color: white; border-radius: 10px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+}
+
+/* ========== Fullscreen Image Viewer ========== */
+.image-viewer {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.9); z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.image-viewer img {
+  max-width: 90%; max-height: 90%; border-radius: 10px;
+}
+
+/* ========== Toast ========== */
+.toast {
+  position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+  background: #333; color: white; padding: 12px 24px;
+  border-radius: 25px; font-size: 14px; font-weight: 600;
+  z-index: 2000; animation: toastIn 0.3s ease, toastOut 0.3s ease 1.7s forwards;
+  pointer-events: none;
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@keyframes toastOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 380px) {
+  .header h1 { font-size: 24px; }
+  .days-number { font-size: 56px; }
+  .profiles-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Floating Hearts Background -->
+<div class="hearts-bg" id="heartsBg"></div>
+
+<!-- Main App -->
+<div class="app-container">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-mascots">
+      <div class="mascot yier">🐱</div>
+      <span class="hearts-icon">💕</span>
+      <div class="mascot bubu">🐰</div>
+    </div>
+    <h1>王俊龙 ❤️ 贺一帆</h1>
+    <p class="subtitle">大白龙和小豆包 的恋爱小屋 🏠</p>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <button class="nav-btn active" data-section="days">
+      <span class="nav-icon">💕</span>我们的时光
+    </button>
+    <button class="nav-btn" data-section="food">
+      <span class="nav-icon">🍜</span>美食天地
+    </button>
+    <button class="nav-btn" data-section="story">
+      <span class="nav-icon">📸</span>我们的故事
+    </button>
+    <button class="nav-btn" data-section="profile">
+      <span class="nav-icon">💌</span>个人资料
+    </button>
+  </nav>
+
+  <!-- ==================== Section 1: Our Time ==================== -->
+  <div class="section active" id="sec-days">
+    <!-- Days Counter -->
+    <div class="card days-counter-card">
+      <div class="label">我们已经在一起</div>
+      <div class="days-number" id="daysCount">0</div>
+      <div class="unit">天</div>
+      <div class="start-date">从 2026年2月11日 开始 💗</div>
+    </div>
+
+    <!-- Calendar Check-in -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📅</span>每日打卡日历</div>
+      <div class="calendar-header">
+        <button onclick="changeMonth(-1)">◀</button>
+        <span class="calendar-month" id="calendarMonth">2026年6月</span>
+        <button onclick="changeMonth(1)">▶</button>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+      <div class="checkin-streak" id="checkinStreak">
+        🔥 连续打卡 <strong id="streakCount">0</strong> 天
+      </div>
+      <button class="checkin-btn" id="checkinBtn" onclick="doCheckin()">
+        💝 今日打卡
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== Section 2: Food Paradise ==================== -->
+  <div class="section" id="sec-food">
+    <div class="food-subnav">
+      <button class="active" data-food-panel="homemade">👨‍🍳 自制美食</button>
+      <button data-food-panel="lottery">🎰 外卖抽奖</button>
+      <button data-food-panel="snacks">🍪 零食宝库</button>
+    </div>
+
+    <!-- Homemade Food -->
+    <div class="food-sub-panel active" id="panel-homemade">
+      <div class="dish-grid" id="dishGrid"></div>
+      <button class="add-dish-btn" onclick="showAddDishForm()">
+        ➕ 添加新美食
+      </button>
+      <div class="card form-card" id="addDishForm">
+        <div class="card-title"><span class="icon">🍳</span>添加美食</div>
+        <div class="form-group">
+          <label>美食名称</label>
+          <input type="text" id="dishName" placeholder="例如：油焖大虾">
+        </div>
+        <div class="form-group">
+          <label>谁做的</label>
+          <input type="text" id="dishChef" placeholder="王俊龙 / 贺一帆">
+        </div>
+        <div class="form-group">
+          <label>标签（用逗号分隔）</label>
+          <input type="text" id="dishTags" placeholder="例如：海鲜, 拿手菜, 微辣">
+        </div>
+        <div class="form-group">
+          <label>美食图标（Emoji）</label>
+          <input type="text" id="dishEmoji" placeholder="🦐" maxlength="4">
+        </div>
+        <div class="form-actions">
+          <button class="btn-secondary" onclick="hideAddDishForm()">取消</button>
+          <button class="btn-primary" onclick="addDish()">保存</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Takeout Lottery -->
+    <div class="food-sub-panel" id="panel-lottery">
+      <div class="card lottery-container">
+        <div class="card-title"><span class="icon">🎰</span>今天吃什么？</div>
+        <div class="lottery-display">
+          <div>
+            <div class="lottery-emoji" id="lotteryEmoji">🎲</div>
+            <div class="lottery-text" id="lotteryText">点击下方按钮</div>
+          </div>
+        </div>
+        <button class="lottery-btn" id="lotteryBtn" onclick="startLottery()">
+          🎯 开始抽奖
+        </button>
+        <div class="lottery-history" id="lotteryHistory">
+          <h4>📋 抽奖历史</h4>
+          <div id="lotteryHistoryList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Snacks -->
+    <div class="food-sub-panel" id="panel-snacks">
+      <div class="card">
+        <div class="card-title"><span class="icon">🍪</span>零食宝库</div>
+        <div class="snack-categories" id="snackCategories"></div>
+        <div class="snack-list" id="snackList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== Section 3: Our Story ==================== -->
+  <div class="section" id="sec-story">
+    <button class="add-story-btn" onclick="showAddStoryForm()">
+      ➕ 记录我们的故事
+    </button>
+
+    <!-- Add Story Form -->
+    <div class="card form-card" id="addStoryForm">
+      <div class="card-title"><span class="icon">✍️</span>记录新故事</div>
+      <div class="form-group">
+        <label>日期</label>
+        <input type="date" id="storyDate">
+      </div>
+      <div class="form-group">
+        <label>内容</label>
+        <textarea id="storyText" placeholder="写下我们一起做的事..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>上传照片/视频</label>
+        <input type="file" id="storyMedia" accept="image/*,video/*" multiple>
+      </div>
+      <div class="form-actions">
+        <button class="btn-secondary" onclick="hideAddStoryForm()">取消</button>
+        <button class="btn-primary" onclick="addStory()">💾 保存故事</button>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline" id="timeline"></div>
+  </div>
+
+  <!-- ==================== Section 4: Profiles ==================== -->
+  <div class="section" id="sec-profile">
+    <div class="profiles-grid">
+      <!-- 王俊龙 Profile（侍卫布布） -->
+      <div class="profile-card wjl" id="profileWJL">
+        <div class="profile-avatar wjl-avatar" id="wjlAvatar" onclick="uploadAvatar('wjl')">
+          <span class="avatar-placeholder">🧑</span>
+        </div>
+        <div class="profile-name" id="wjlName">王俊龙</div>
+        <div class="profile-role">⚔️ 侍卫布布</div>
+        <div class="profile-fields" id="wjlFields"></div>
+        <button class="edit-profile-btn" onclick="toggleProfileEdit('wjl')">✏️ 编辑资料</button>
+        <div class="edit-profile-form" id="editForm-wjl"></div>
+      </div>
+
+      <!-- 贺一帆 Profile（皇帝一二） -->
+      <div class="profile-card hyf" id="profileHYF">
+        <div class="profile-avatar hyf-avatar" id="hyfAvatar" onclick="uploadAvatar('hyf')">
+          <span class="avatar-placeholder">👩</span>
+        </div>
+        <div class="profile-name" id="hyfName">贺一帆</div>
+        <div class="profile-role">👑 皇帝一二</div>
+        <div class="profile-fields" id="hyfFields"></div>
+        <button class="edit-profile-btn" onclick="toggleProfileEdit('hyf')">✏️ 编辑资料</button>
+        <div class="edit-profile-form" id="editForm-hyf"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Love Quote Modal (hidden by default) -->
+<div class="modal-overlay" id="quoteModal" style="display:none;">
+  <div class="love-quote-card" id="quoteCard"></div>
+</div>
+
+<script>
+// ==================== CONSTANTS ====================
+const START_DATE = new Date('2026-02-11');
+const STORAGE_KEY = 'love_app_data';
+
+// ==================== LOVE QUOTES ====================
+const LOVE_QUOTES = [
+  { text: '你是我的阳光，温暖了我的每一天。☀️', from: '— 皇帝一二' },
+  { text: '和你在一起的每一刻，都是最好的时光。✨', from: '— 侍卫布布' },
+  { text: '遇见你，是我这辈子最美丽的意外。💫', from: '— 皇帝一二' },
+  { text: '我喜欢你，从一而终，认真且怂。💗', from: '— 侍卫布布' },
+  { text: '世界很大，但我的眼里只有你。🌍', from: '— 皇帝一二' },
+  { text: '你是我所有温柔和偏爱的原因。🌸', from: '— 侍卫布布' },
+  { text: '想和你一起，看遍世间所有的美好。🌅', from: '— 皇帝一二' },
+  { text: '日子渺小重复，却都是幸福。因为有你在。🏠', from: '— 侍卫布布' },
+  { text: '你是年少的欢喜，也是余生的甜蜜。🍬', from: '— 皇帝一二' },
+  { text: '最好的爱情就是，你在闹，我在笑。😊', from: '— 侍卫布布' },
+  { text: '愿得一人心，白首不分离。💍', from: '— 皇帝一二' },
+  { text: '你就是我想要共度余生的那个人。💖', from: '— 侍卫布布' },
+  { text: '每次见到你，心跳还是会加速。💓', from: '— 皇帝一二' },
+  { text: '谢谢你来到我的世界，让它变得完整。🧩', from: '— 侍卫布布' },
+  { text: '和你在一起做什么都开心，哪怕只是发呆。🥰', from: '— 皇帝一二' },
+  { text: '你是上天给我最好的礼物。🎁', from: '— 侍卫布布' },
+  { text: '我会一直陪着你，无论晴天还是下雨。☂️', from: '— 皇帝一二' },
+  { text: '爱不是轰轰烈烈，而是细水长流。💧', from: '— 侍卫布布' },
+  { text: '你的笑容，是我每天最期待看到的风景。😄', from: '— 皇帝一二' },
+  { text: '我们在一起的每一天都值得被纪念。📝', from: '— 侍卫布布' },
+];
+
+// ==================== FOOD DATA ====================
+const DEFAULT_DISHES = [
+  { name: '油焖大虾', chef: '王俊龙', tags: ['海鲜', '拿手菜', '微辣'], emoji: '🦐' },
+  { name: '可乐鸡翅', chef: '贺一帆', tags: ['鸡肉', '甜口', '下饭'], emoji: '🍗' },
+  { name: '红烧排骨', chef: '王俊龙', tags: ['猪肉', '红烧', '经典'], emoji: '🍖' },
+  { name: '番茄炒蛋', chef: '贺一帆', tags: ['家常', '快手菜', '下饭'], emoji: '🍅' },
+  { name: '酸菜鱼', chef: '王俊龙', tags: ['鱼', '酸辣', '大菜'], emoji: '🐟' },
+  { name: '麻辣香锅', chef: '贺一帆', tags: ['麻辣', '丰富', '过瘾'], emoji: '🥘' },
+  { name: '糖醋里脊', chef: '王俊龙', tags: ['猪肉', '酸甜', '酥脆'], emoji: '🥩' },
+  { name: '蒜蓉西兰花', chef: '贺一帆', tags: ['蔬菜', '健康', '清淡'], emoji: '🥦' },
+];
+
+const TAKEOUT_OPTIONS = [
+  { name: '麦当劳 🍔', emoji: '🍔' },
+  { name: '肯德基 🍗', emoji: '🍗' },
+  { name: '必胜客 🍕', emoji: '🍕' },
+  { name: '海底捞外卖 🍲', emoji: '🍲' },
+  { name: '麻辣烫 🥘', emoji: '🥘' },
+  { name: '黄焖鸡米饭 🍚', emoji: '🍚' },
+  { name: '沙县小吃 🥟', emoji: '🥟' },
+  { name: '兰州拉面 🍜', emoji: '🍜' },
+  { name: '螺蛳粉 🍝', emoji: '🍝' },
+  { name: '寿司 🍣', emoji: '🍣' },
+  { name: '烤肉拌饭 🍛', emoji: '🍛' },
+  { name: '炸鸡啤酒 🍺', emoji: '🍺' },
+  { name: '麻辣小龙虾 🦞', emoji: '🦞' },
+  { name: '煲仔饭 🍲', emoji: '🍲' },
+  { name: '过桥米线 🍜', emoji: '🍜' },
+  { name: '煎饼果子 🥞', emoji: '🥞' },
+  { name: '肉夹馍 🥙', emoji: '🥙' },
+  { name: '凉皮 🥗', emoji: '🥗' },
+  { name: '酸辣粉 🍜', emoji: '🍜' },
+  { name: '烤鱼 🐟', emoji: '🐟' },
+  { name: '串串香 🍢', emoji: '🍢' },
+  { name: '披萨 🍕', emoji: '🍕' },
+  { name: '汉堡王 🍔', emoji: '🍔' },
+  { name: '新疆大盘鸡 🍗', emoji: '🍗' },
+  { name: '重庆小面 🍜', emoji: '🍜' },
+  { name: '广式茶点 🥧', emoji: '🥧' },
+  { name: '石锅拌饭 🍚', emoji: '🍚' },
+  { name: '泰式咖喱 🍛', emoji: '🍛' },
+  { name: '韩式炸鸡 🍗', emoji: '🍗' },
+  { name: '日式拉面 🍜', emoji: '🍜' },
+];
+
+const SNACKS_DATA = {
+  '膨化食品': [
+    { name: '乐事薯片', brand: '乐事', emoji: '🥔' },
+    { name: '浪味仙', brand: '旺旺', emoji: '🌀' },
+    { name: '上好佳鲜虾片', brand: '上好佳', emoji: '🦐' },
+    { name: '乖乖脆果', brand: '乖乖', emoji: '🌽' },
+    { name: '奇多粟米棒', brand: '百事', emoji: '🌽' },
+    { name: '芝士球', brand: '好丽友', emoji: '🧀' },
+    { name: '妙脆角', brand: '通用磨坊', emoji: '🔺' },
+  ],
+  '糖果巧克力': [
+    { name: '费列罗榛果巧克力', brand: '费列罗', emoji: '🍫' },
+    { name: '德芙巧克力', brand: '德芙', emoji: '🍫' },
+    { name: '大白兔奶糖', brand: '大白兔', emoji: '🐰' },
+    { name: '不二家棒棒糖', brand: '不二家', emoji: '🍭' },
+    { name: '悠哈味觉糖', brand: '悠哈', emoji: '🍬' },
+    { name: '瑞士莲软心巧克力', brand: '瑞士莲', emoji: '🍫' },
+  ],
+  '饼干糕点': [
+    { name: '奥利奥', brand: '亿滋', emoji: '🍪' },
+    { name: '白色恋人', brand: '石屋制菓', emoji: '🤍' },
+    { name: '皇冠曲奇', brand: '丹麦蓝罐', emoji: '🍪' },
+    { name: '好丽友派', brand: '好丽友', emoji: '🥧' },
+    { name: '百醇注心饼干', brand: '格力高', emoji: '🥖' },
+    { name: '蛋卷', brand: '元朗', emoji: '🥐' },
+  ],
+  '坚果果干': [
+    { name: '三只松鼠每日坚果', brand: '三只松鼠', emoji: '🥜' },
+    { name: '良品铺子芒果干', brand: '良品铺子', emoji: '🥭' },
+    { name: '百草味夏威夷果', brand: '百草味', emoji: '🌰' },
+    { name: '沃隆每日坚果', brand: '沃隆', emoji: '🥜' },
+    { name: '开心果', brand: '天喔', emoji: '😄' },
+  ],
+  '卤味肉干': [
+    { name: '周黑鸭鸭脖', brand: '周黑鸭', emoji: '🦆' },
+    { name: '良品铺子牛肉干', brand: '良品铺子', emoji: '🥩' },
+    { name: '绝味鸭舌', brand: '绝味', emoji: '👅' },
+    { name: '来伊份猪肉脯', brand: '来伊份', emoji: '🐷' },
+    { name: '无穷盐焗鸡翅', brand: '无穷', emoji: '🍗' },
+  ],
+  '饮品冲调': [
+    { name: '三顿半咖啡', brand: '三顿半', emoji: '☕' },
+    { name: '隅田川挂耳咖啡', brand: '隅田川', emoji: '☕' },
+    { name: '元气森林气泡水', brand: '元气森林', emoji: '🥤' },
+    { name: '维他柠檬茶', brand: '维他', emoji: '🍋' },
+    { name: '养乐多', brand: '养乐多', emoji: '🥛' },
+  ],
+};
+
+// ==================== DATA MANAGEMENT ====================
+// ===== 云同步配置 =====
+let useCloud = false;
+
+function getDefaultData() {
+  return {
+    checkins: {},
+    dishes: [...DEFAULT_DISHES],
+    lotteryHistory: [],
+    stories: [],
+    profiles: {
+      wjl: {
+        name: '王俊龙', avatar: '', birthday: '', zodiac: '',
+        mbti: '', hobbies: '', favoriteFood: '', dream: '', wechat: '',
+      },
+      hyf: {
+        name: '贺一帆', avatar: '', birthday: '', zodiac: '',
+        mbti: '', hobbies: '', favoriteFood: '', dream: '', wechat: '',
+      },
+    },
+  };
+}
+
+function mergeWithDefaults(data) {
+  const defaults = getDefaultData();
+  for (const key of Object.keys(defaults)) {
+    if (!(key in data)) data[key] = defaults[key];
+  }
+  if (!data.dishes || data.dishes.length === 0) data.dishes = [...DEFAULT_DISHES];
+  for (const person of ['wjl', 'hyf']) {
+    if (!data.profiles[person]) data.profiles[person] = {...defaults.profiles[person]};
+    for (const field of Object.keys(defaults.profiles[person])) {
+      if (!(field in data.profiles[person])) data.profiles[person][field] = defaults.profiles[person][field];
+    }
+  }
+  return data;
+}
+
+function loadLocalData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return mergeWithDefaults(JSON.parse(raw));
+  } catch (e) {}
+  return getDefaultData();
+}
+
+function saveLocalData(data) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch (e) {
+    if (e.name === 'QuotaExceededError') showToast('⚠️ 存储空间不足');
+  }
+}
+
+let appData = loadLocalData();
+
+// ===== 云同步：通过后端 API =====
+const API_BASE = window.location.origin;
+
+async function saveToCloud(data) {
+  try {
+    await fetch(API_BASE + '/api/data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+  } catch (e) { console.log('Cloud save failed'); }
+}
+
+async function loadFromCloud() {
+  try {
+    const res = await fetch(API_BASE + '/api/data');
+    if (res.ok) return await res.json();
+  } catch (e) {}
+  return null;
+}
+
+// Save data: cloud + local
+function saveData(data) {
+  saveLocalData(data);
+  if (useCloud) saveToCloud(data);
+}
+
+// ===== 定时云同步 =====
+let syncTimer = null;
+function startCloudSync() {
+  useCloud = true;
+
+  // Pull from cloud every 3 seconds
+  syncTimer = setInterval(async () => {
+    const cloudData = await loadFromCloud();
+    if (cloudData && Object.keys(cloudData).length > 0) {
+      const merged = mergeWithDefaults(cloudData);
+      if (!merged.dishes || !Array.isArray(merged.dishes)) merged.dishes = Object.values(merged.dishes || {});
+      if (!merged.lotteryHistory || !Array.isArray(merged.lotteryHistory)) merged.lotteryHistory = Object.values(merged.lotteryHistory || {});
+      if (!merged.stories || !Array.isArray(merged.stories)) merged.stories = Object.values(merged.stories || {});
+
+      const oldData = JSON.stringify(appData);
+      const newData = JSON.stringify(merged);
+      if (oldData !== newData) {
+        appData = merged;
+        saveLocalData(appData);
+        refreshAllUI();
+      }
+    }
+  }, 3000);
+
+  // Push local data to cloud immediately
+  saveToCloud(appData);
+  console.log('☁️ 云同步已启动');
+}
+
+function refreshAllUI() {
+  updateDaysCounter();
+  renderCalendar();
+  renderDishes();
+  renderLotteryHistory();
+  renderSnackList();
+  renderStories();
+  renderProfiles();
+}
+
+// ==================== DAYS COUNTER ====================
+function getDaysTogether() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const start = new Date(START_DATE);
+  start.setHours(0, 0, 0, 0);
+  const diffTime = today - start;
+  return Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+}
+
+function updateDaysCounter() {
+  const days = getDaysTogether();
+  const el = document.getElementById('daysCount');
+  el.textContent = days;
+  // Re-animate
+  el.style.animation = 'none';
+  el.offsetHeight; // reflow
+  el.style.animation = 'countIn 0.6s ease-out';
+}
+
+// ==================== CALENDAR ====================
+let calendarYear, calendarMonth;
+
+function initCalendar() {
+  const today = new Date();
+  calendarYear = today.getFullYear();
+  calendarMonth = today.getMonth(); // 0-indexed
+  renderCalendar();
+}
+
+function changeMonth(delta) {
+  calendarMonth += delta;
+  if (calendarMonth < 0) { calendarMonth = 11; calendarYear--; }
+  if (calendarMonth > 11) { calendarMonth = 0; calendarYear++; }
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const grid = document.getElementById('calendarGrid');
+  const monthLabel = document.getElementById('calendarMonth');
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayStr = formatDate(today);
+
+  const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+  monthLabel.textContent = calendarYear + '年' + monthNames[calendarMonth];
+
+  // Day names
+  const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
+  let html = dayNames.map(d => `<div class="calendar-day-name">${d}</div>`).join('');
+
+  // First day of month
+  const firstDay = new Date(calendarYear, calendarMonth, 1).getDay();
+  const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+  const daysInPrevMonth = new Date(calendarYear, calendarMonth, 0).getDate();
+
+  // Previous month days
+  for (let i = firstDay - 1; i >= 0; i--) {
+    const d = daysInPrevMonth - i;
+    html += `<div class="calendar-day other-month">${d}</div>`;
+  }
+
+  // Current month days
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = formatDate(new Date(calendarYear, calendarMonth, d));
+    let cls = 'calendar-day';
+    if (dateStr === todayStr) cls += ' today';
+    if (appData.checkins[dateStr]) cls += ' checked';
+
+    // Determine if past and unchecked (gray out)
+    const thisDate = new Date(calendarYear, calendarMonth, d);
+    thisDate.setHours(0, 0, 0, 0);
+    const isPast = thisDate < today && dateStr !== todayStr;
+    const isFuture = thisDate > today;
+    if (isPast && !appData.checkins[dateStr]) cls += ' past-unchecked';
+
+    html += `<div class="${cls}" data-date="${dateStr}" onclick="clickCalendarDay('${dateStr}', ${isFuture})">${d}</div>`;
+  }
+
+  // Remaining cells
+  const totalCells = firstDay + daysInMonth;
+  const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+  for (let d = 1; d <= remaining; d++) {
+    html += `<div class="calendar-day other-month">${d}</div>`;
+  }
+
+  grid.innerHTML = html;
+  updateCheckinButton();
+  updateStreak();
+}
+
+function formatDate(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function clickCalendarDay(dateStr, isFuture) {
+  if (isFuture) return; // Can't check in for future dates
+  const todayStr = formatDate(new Date());
+  if (dateStr === todayStr) {
+    doCheckin();
+  }
+}
+
+function updateCheckinButton() {
+  const todayStr = formatDate(new Date());
+  const btn = document.getElementById('checkinBtn');
+  if (appData.checkins[todayStr]) {
+    btn.textContent = '✅ 今日已打卡';
+    btn.disabled = true;
+  } else {
+    btn.textContent = '💝 今日打卡';
+    btn.disabled = false;
+  }
+}
+
+function updateStreak() {
+  let streak = 0;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const d = new Date(today);
+
+  // Check from today backwards
+  for (let i = 0; i < 365; i++) {
+    const dateStr = formatDate(d);
+    if (appData.checkins[dateStr]) {
+      streak++;
+      d.setDate(d.getDate() - 1);
+    } else {
+      // Allow today to be unchecked (streak from yesterday counts)
+      if (i === 0) {
+        d.setDate(d.getDate() - 1);
+        continue;
+      }
+      break;
+    }
+  }
+  document.getElementById('streakCount').textContent = streak;
+}
+
+function doCheckin() {
+  const todayStr = formatDate(new Date());
+  if (appData.checkins[todayStr]) {
+    showToast('今天已经打过卡啦~ 💕');
+    return;
+  }
+
+  appData.checkins[todayStr] = true;
+  saveData(appData);
+  renderCalendar();
+  updateDaysCounter();
+
+  // Show love quote card
+  showLoveQuote();
+}
+
+function showLoveQuote() {
+  const quote = LOVE_QUOTES[Math.floor(Math.random() * LOVE_QUOTES.length)];
+  const modal = document.getElementById('quoteModal');
+  const card = document.getElementById('quoteCard');
+
+  // Generate sparkles
+  const sparkles = [];
+  for (let i = 0; i < 12; i++) {
+    const angle = (Math.PI * 2 * i) / 12;
+    const distance = 60 + Math.random() * 80;
+    sparkles.push({
+      emoji: ['✨', '💕', '💖', '💗', '🌟', '💝'][Math.floor(Math.random() * 6)],
+      sx: Math.cos(angle) * distance + 'px',
+      sy: Math.sin(angle) * distance + 'px',
+    });
+  }
+
+  card.innerHTML = `
+    <button class="close-btn" onclick="closeQuoteModal()">✕</button>
+    <div class="sparkles">${sparkles.map(s =>
+      `<span class="sparkle" style="--sx:${s.sx};--sy:${s.sy}">${s.emoji}</span>`
+    ).join('')}</div>
+    <div class="quote-icon">💌</div>
+    <div class="quote-text">${quote.text}</div>
+    <div class="quote-from">${quote.from}</div>
+  `;
+
+  modal.style.display = 'flex';
+
+  // Auto close after 4 seconds
+  setTimeout(() => {
+    if (modal.style.display !== 'none') closeQuoteModal();
+  }, 4000);
+}
+
+function closeQuoteModal() {
+  document.getElementById('quoteModal').style.display = 'none';
+}
+
+// Close modal on overlay click
+document.addEventListener('click', function(e) {
+  if (e.target.id === 'quoteModal') closeQuoteModal();
+});
+
+// ==================== FOOD SECTION ====================
+// Sub-navigation
+document.querySelectorAll('.food-subnav button').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.food-subnav button').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const panelId = 'panel-' + this.dataset.foodPanel;
+    document.querySelectorAll('.food-sub-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(panelId).classList.add('active');
+  });
+});
+
+// Homemade dishes
+function renderDishes() {
+  const grid = document.getElementById('dishGrid');
+  if (appData.dishes.length === 0) {
+    grid.innerHTML = '<p style="text-align:center;color:#aaa;padding:20px;">还没有添加美食哦~ 点击下方按钮添加吧！</p>';
+    return;
+  }
+  grid.innerHTML = appData.dishes.map((dish, i) => `
+    <div class="dish-card" onclick="deleteDish(${i})">
+      <div class="dish-img">${dish.emoji || '🍽️'}</div>
+      <div class="dish-info">
+        <div class="dish-name">${dish.name}</div>
+        <div class="dish-chef">👨‍🍳 ${dish.chef}</div>
+        ${dish.tags && dish.tags.length > 0 ? `
+          <div class="dish-tags">${dish.tags.map(t => `<span class="dish-tag">${t}</span>`).join('')}</div>
+        ` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function showAddDishForm() {
+  document.getElementById('addDishForm').classList.add('show');
+  document.getElementById('dishName').focus();
+}
+
+function hideAddDishForm() {
+  document.getElementById('addDishForm').classList.remove('show');
+  document.getElementById('dishName').value = '';
+  document.getElementById('dishChef').value = '';
+  document.getElementById('dishTags').value = '';
+  document.getElementById('dishEmoji').value = '';
+}
+
+function addDish() {
+  const name = document.getElementById('dishName').value.trim();
+  const chef = document.getElementById('dishChef').value.trim();
+  const tagsStr = document.getElementById('dishTags').value.trim();
+  const emoji = document.getElementById('dishEmoji').value.trim();
+
+  if (!name) { showToast('请输入美食名称'); return; }
+  if (!chef) { showToast('请输入谁做的'); return; }
+
+  const tags = tagsStr ? tagsStr.split(/[,，]/).map(t => t.trim()).filter(t => t) : [];
+  appData.dishes.push({ name, chef, tags, emoji: emoji || '🍽️' });
+  saveData(appData);
+  hideAddDishForm();
+  renderDishes();
+  showToast('✅ 美食添加成功！');
+}
+
+function deleteDish(index) {
+  if (confirm(`确定要删除「${appData.dishes[index].name}」吗？`)) {
+    appData.dishes.splice(index, 1);
+    saveData(appData);
+    renderDishes();
+    showToast('已删除');
+  }
+}
+
+// Takeout Lottery
+let lotteryRunning = false;
+let lotteryInterval;
+
+function startLottery() {
+  if (lotteryRunning) return;
+  lotteryRunning = true;
+  const btn = document.getElementById('lotteryBtn');
+  btn.textContent = '🎰 抽奖中...';
+  btn.style.opacity = '0.7';
+
+  const textEl = document.getElementById('lotteryText');
+  const emojiEl = document.getElementById('lotteryEmoji');
+
+  let count = 0;
+  const maxCount = 20 + Math.floor(Math.random() * 15); // 20-35 rolls
+
+  lotteryInterval = setInterval(() => {
+    const randomIdx = Math.floor(Math.random() * TAKEOUT_OPTIONS.length);
+    const option = TAKEOUT_OPTIONS[randomIdx];
+    textEl.textContent = option.name;
+    emojiEl.textContent = option.emoji;
+    count++;
+
+    if (count >= maxCount) {
+      clearInterval(lotteryInterval);
+      lotteryRunning = false;
+      btn.textContent = '🎯 开始抽奖';
+      btn.style.opacity = '1';
+
+      // Save to history
+      const today = formatDate(new Date());
+      appData.lotteryHistory.unshift({
+        date: today,
+        name: option.name,
+        emoji: option.emoji,
+      });
+      // Keep only last 20
+      if (appData.lotteryHistory.length > 20) appData.lotteryHistory = appData.lotteryHistory.slice(0, 20);
+      saveData(appData);
+      renderLotteryHistory();
+
+      // Celebration effect
+      emojiEl.style.transform = 'scale(1.5)';
+      setTimeout(() => { emojiEl.style.transform = 'scale(1)'; }, 300);
+
+      showToast(`🎉 今天就吃：${option.name}`);
+    }
+  }, 80);
+}
+
+function renderLotteryHistory() {
+  const list = document.getElementById('lotteryHistoryList');
+  if (appData.lotteryHistory.length === 0) {
+    list.innerHTML = '<p style="color:#aaa;font-size:13px;">还没有抽过奖哦~</p>';
+    return;
+  }
+  list.innerHTML = appData.lotteryHistory.map(h =>
+    `<span class="lottery-history-item">${h.emoji} ${h.name} <small>${h.date}</small></span>`
+  ).join('');
+}
+
+// Snacks
+let currentSnackCategory = '膨化食品';
+
+function renderSnackCategories() {
+  const container = document.getElementById('snackCategories');
+  const categories = Object.keys(SNACKS_DATA);
+  container.innerHTML = categories.map(cat => {
+    const active = cat === currentSnackCategory ? ' active' : '';
+    return `<button class="snack-cat-btn${active}" onclick="selectSnackCategory('${cat}')">${cat}</button>`;
+  }).join('');
+}
+
+function selectSnackCategory(cat) {
+  currentSnackCategory = cat;
+  renderSnackCategories();
+  renderSnackList();
+}
+
+function renderSnackList() {
+  const list = document.getElementById('snackList');
+  const snacks = SNACKS_DATA[currentSnackCategory] || [];
+  list.innerHTML = snacks.map(s =>
+    `<div class="snack-item">
+      <span class="snack-emoji">${s.emoji}</span>
+      <div>
+        <div class="snack-name">${s.name}</div>
+        <div class="snack-brand">${s.brand}</div>
+      </div>
+    </div>`
+  ).join('');
+}
+
+// ==================== STORY SECTION ====================
+function renderStories() {
+  const timeline = document.getElementById('timeline');
+  if (appData.stories.length === 0) {
+    timeline.innerHTML = '<p style="text-align:center;color:#aaa;padding:30px;">还没有记录我们的故事哦~<br>点击上方按钮开始记录吧！💕</p>';
+    return;
+  }
+
+  // Sort by date descending
+  const sorted = [...appData.stories].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  timeline.innerHTML = sorted.map((story, i) => {
+    const originalIndex = appData.stories.indexOf(story);
+    const imagesHtml = story.images && story.images.length > 0
+      ? `<div class="story-images">${story.images.map((img, ii) =>
+          `<img src="${img}" alt="照片${ii+1}" onclick="viewImage('${img}')" loading="lazy">`
+        ).join('')}</div>`
+      : '';
+    const videoHtml = story.video
+      ? `<video class="story-video" src="${story.video}" controls></video>`
+      : '';
+    const commentsHtml = story.comments && story.comments.length > 0
+      ? `<div class="story-comments">${story.comments.map(c =>
+          `<div class="story-comment"><span class="comment-author">${c.author}:</span><span>${c.text}</span></div>`
+        ).join('')}</div>`
+      : '';
+
+    return `
+      <div class="story-item">
+        <div class="story-date">📅 ${story.date}</div>
+        <div class="story-text">${story.text}</div>
+        ${imagesHtml}
+        ${videoHtml}
+        <div class="story-actions">
+          <button onclick="addComment(${originalIndex})">💬 评论</button>
+          <button class="btn-danger" onclick="deleteStory(${originalIndex})" style="background:#fff0f0;color:#e74c3c;">🗑️ 删除</button>
+        </div>
+        ${commentsHtml}
+      </div>
+    `;
+  }).join('');
+}
+
+function showAddStoryForm() {
+  document.getElementById('addStoryForm').classList.add('show');
+  document.getElementById('storyDate').value = formatDate(new Date());
+  document.getElementById('storyText').focus();
+}
+
+function hideAddStoryForm() {
+  document.getElementById('addStoryForm').classList.remove('show');
+  document.getElementById('storyText').value = '';
+  document.getElementById('storyMedia').value = '';
+}
+
+function addStory() {
+  const date = document.getElementById('storyDate').value;
+  const text = document.getElementById('storyText').value.trim();
+  const mediaInput = document.getElementById('storyMedia');
+
+  if (!date) { showToast('请选择日期'); return; }
+  if (!text) { showToast('请写下故事内容'); return; }
+
+  const story = {
+    date,
+    text,
+    images: [],
+    video: null,
+    comments: [],
+  };
+
+  const files = mediaInput.files;
+  if (files.length > 0) {
+    let processed = 0;
+    const totalFiles = files.length;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        if (file.type.startsWith('video/')) {
+          story.video = dataUrl;
+        } else if (file.type.startsWith('image/')) {
+          story.images.push(dataUrl);
+        }
+        processed++;
+        if (processed === totalFiles) {
+          finalizeAddStory(story);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    if (totalFiles === 0) finalizeAddStory(story);
+  } else {
+    finalizeAddStory(story);
+  }
+}
+
+function finalizeAddStory(story) {
+  appData.stories.push(story);
+  saveData(appData);
+  hideAddStoryForm();
+  renderStories();
+  showToast('✅ 故事保存成功！');
+}
+
+function addComment(index) {
+  const author = prompt('你的名字？（王俊龙 / 贺一帆）');
+  if (!author) return;
+  const text = prompt('写下你的评论：');
+  if (!text) return;
+
+  if (!appData.stories[index].comments) appData.stories[index].comments = [];
+  appData.stories[index].comments.push({ author, text });
+  saveData(appData);
+  renderStories();
+}
+
+function deleteStory(index) {
+  if (confirm('确定要删除这条故事吗？')) {
+    appData.stories.splice(index, 1);
+    saveData(appData);
+    renderStories();
+    showToast('已删除');
+  }
+}
+
+function viewImage(src) {
+  const viewer = document.createElement('div');
+  viewer.className = 'image-viewer';
+  viewer.innerHTML = '<img src="' + src + '" alt="照片">';
+  viewer.addEventListener('click', () => viewer.remove());
+  document.body.appendChild(viewer);
+}
+
+// ==================== PROFILE SECTION ====================
+const PROFILE_FIELDS = [
+  { key: 'birthday', label: '🎂 生日' },
+  { key: 'zodiac', label: '⭐ 星座' },
+  { key: 'mbti', label: '🧠 MBTI' },
+  { key: 'hobbies', label: '💝 爱好' },
+  { key: 'favoriteFood', label: '🍽️ 最爱美食' },
+  { key: 'dream', label: '🌟 梦想' },
+  { key: 'wechat', label: '💬 微信' },
+];
+
+function renderProfiles() {
+  for (const person of ['wjl', 'hyf']) {
+    const profile = appData.profiles[person];
+    const fieldsEl = document.getElementById(person + 'Fields');
+    document.getElementById(person + 'Name').textContent = profile.name;
+
+    // Render avatar
+    const avatarEl = document.getElementById(person + 'Avatar');
+    if (profile.avatar) {
+      avatarEl.innerHTML = `<img src="${profile.avatar}" alt="头像" loading="lazy"><span class="avatar-placeholder" style="opacity:0">.</span>`;
+    }
+
+    fieldsEl.innerHTML = PROFILE_FIELDS.map(f =>
+      `<div class="profile-field">
+        <span class="field-label">${f.label}</span>
+        <span class="field-value" title="点击编辑">${profile[f.key] || '未填写'}</span>
+      </div>`
+    ).join('');
+  }
+}
+
+function uploadAvatar(person) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('⚠️ 图片不能超过5MB');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      appData.profiles[person].avatar = ev.target.result;
+      saveData(appData);
+      renderProfiles();
+      showToast('✅ 头像已更新！');
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+}
+
+function toggleProfileEdit(person) {
+  const formEl = document.getElementById('editForm-' + person);
+  if (formEl.classList.contains('show')) {
+    formEl.classList.remove('show');
+    return;
+  }
+
+  const profile = appData.profiles[person];
+  formEl.innerHTML = `
+    <div class="form-group" style="margin-bottom:8px;">
+      <label>姓名</label>
+      <input type="text" id="edit-${person}-name" value="${profile.name || ''}">
+    </div>
+    ${PROFILE_FIELDS.map(f => `
+      <div class="form-group" style="margin-bottom:8px;">
+        <label>${f.label}</label>
+        <input type="text" id="edit-${person}-${f.key}" value="${profile[f.key] || ''}">
+      </div>
+    `).join('')}
+    <button class="save-btn" onclick="saveProfile('${person}')">💾 保存</button>
+  `;
+  formEl.classList.add('show');
+}
+
+function saveProfile(person) {
+  const profile = appData.profiles[person];
+  profile.name = document.getElementById('edit-' + person + '-name').value.trim() || profile.name;
+  for (const f of PROFILE_FIELDS) {
+    profile[f.key] = document.getElementById('edit-' + person + '-' + f.key).value.trim();
+  }
+  saveData(appData);
+  document.getElementById('editForm-' + person).classList.remove('show');
+  renderProfiles();
+  showToast('✅ 资料已保存！');
+}
+
+// ==================== NAVIGATION ====================
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const sectionId = 'sec-' + this.dataset.section;
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(sectionId).classList.add('active');
+
+    // Refresh relevant content
+    if (this.dataset.section === 'days') {
+      updateDaysCounter();
+      renderCalendar();
+    }
+    if (this.dataset.section === 'food') {
+      renderDishes();
+      renderLotteryHistory();
+      renderSnackList();
+    }
+    if (this.dataset.section === 'story') {
+      renderStories();
+    }
+    if (this.dataset.section === 'profile') {
+      renderProfiles();
+    }
+  });
+});
+
+// ==================== TOAST ====================
+function showToast(message) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2200);
+}
+
+// ==================== FLOATING HEARTS ====================
+function createFloatingHearts() {
+  const container = document.getElementById('heartsBg');
+  const hearts = ['💕', '💖', '💗', '💝', '💘', '❤️', '🩷', '💓', '✨', '🌸'];
+  for (let i = 0; i < 15; i++) {
+    const heart = document.createElement('span');
+    heart.className = 'heart-float';
+    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+    heart.style.left = Math.random() * 95 + '%';
+    heart.style.animationDuration = (6 + Math.random() * 8) + 's';
+    heart.style.animationDelay = Math.random() * 8 + 's';
+    heart.style.fontSize = (14 + Math.random() * 22) + 'px';
+    container.appendChild(heart);
+  }
+}
+
+// ==================== INITIALIZATION ====================
+function autoFillCheckins() {
+  // Auto-fill all days from start date to today
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const start = new Date(START_DATE);
+  start.setHours(0, 0, 0, 0);
+  const d = new Date(start);
+  while (d <= today) {
+    appData.checkins[formatDate(d)] = true;
+    d.setDate(d.getDate() + 1);
+  }
+  saveData(appData);
+}
+
+function init() {
+  updateDaysCounter();
+  autoFillCheckins();
+  initCalendar();
+  renderDishes();
+  renderLotteryHistory();
+  renderSnackCategories();
+  renderSnackList();
+  renderStories();
+  renderProfiles();
+  createFloatingHearts();
+
+  // Start cloud sync (polls every 5s)
+  startCloudSync();
+
+  // Set today's date for story form
+  document.getElementById('storyDate').value = formatDate(new Date());
+
+  // Refresh days counter at midnight
+  const now = new Date();
+  const msToMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime() - now.getTime();
+  setTimeout(() => {
+    updateDaysCounter();
+    renderCalendar();
+    setInterval(() => {
+      updateDaysCounter();
+      renderCalendar();
+    }, 86400000);
+  }, msToMidnight + 1000);
+
+  console.log('💕 王俊龙 ❤️ 贺一帆 的恋爱小屋已就绪！');
+  console.log('👑 皇帝一二 & ⚔️ 侍卫布布 欢迎你们！');
+  console.log('在一起已经 ' + getDaysTogether() + ' 天啦~');
+}
+
+// Run on load
+window.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>

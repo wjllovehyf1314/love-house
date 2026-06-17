@@ -1,0 +1,12 @@
+{
+  "name": "love-house",
+  "version": "1.0.0",
+  "description": "王俊龙 ❤️ 贺一帆 的恋爱小屋",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
