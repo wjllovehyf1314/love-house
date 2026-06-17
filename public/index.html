@@ -981,10 +981,13 @@ async function loadFromCloud() {
   return null;
 }
 
-// Save data: cloud + local
-function saveData(data) {
+// Save data: cloud + local (awaited)
+async function saveData(data) {
   saveLocalData(data);
-  if (useCloud) saveToCloud(data);
+  if (useCloud) {
+    const ok = await saveToCloud(data);
+    if (!ok) console.warn('⚠️ Cloud save failed, data only in localStorage');
+  }
 }
 
 // Smart merge: keep best data from both local and cloud
@@ -1033,27 +1036,36 @@ let syncTimer = null;
 function startCloudSync() {
   useCloud = true;
   let lastCloudJson = '';
+  let firstSyncDone = false;
 
+  // First: pull from cloud and merge (don't push yet)
+  setTimeout(async () => {
+    const cloudData = await loadFromCloud();
+    if (cloudData && Object.keys(cloudData).length > 0) {
+      appData = mergeWithDefaults(smartMerge(appData, cloudData));
+      saveLocalData(appData);
+      refreshAllUI();
+    }
+    firstSyncDone = true;
+  }, 1000);
+
+  // Then: regular sync every 3 seconds
   syncTimer = setInterval(async () => {
+    if (!firstSyncDone) return;
     const cloudData = await loadFromCloud();
     if (cloudData && Object.keys(cloudData).length > 0) {
       const cloudJson = JSON.stringify(cloudData);
       const localJson = JSON.stringify(appData);
 
-      // Only act if cloud changed or local is different
       if (cloudJson !== lastCloudJson && cloudJson !== localJson) {
         lastCloudJson = cloudJson;
-        // Smart merge: combine best of both
         appData = mergeWithDefaults(smartMerge(appData, cloudData));
         saveLocalData(appData);
-        saveToCloud(appData);  // Push merged result back so everyone is in sync
         refreshAllUI();
       }
     }
-  }, 2000);
+  }, 3000);
 
-  // Initial push
-  saveToCloud(appData);
   console.log('☁️ 云同步已启动（智能合并模式）');
 }
 
@@ -1542,9 +1554,9 @@ async function addStory() {
   finalizeAddStory(story);
 }
 
-function finalizeAddStory(story) {
+async function finalizeAddStory(story) {
   appData.stories.push(story);
-  saveData(appData);
+  await saveData(appData);
   hideAddStoryForm();
   renderStories();
   showToast('✅ 故事保存成功！');
@@ -1615,7 +1627,7 @@ function uploadAvatar(person) {
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = 'image/*';
-  input.onchange = function(e) {
+  input.onchange = async function(e) {
     const file = e.target.files[0];
     if (!file) return;
     if (file.size > 10 * 1024 * 1024) {
@@ -1635,8 +1647,7 @@ function uploadAvatar(person) {
       ctx.drawImage(img, 0, 0, w, h);
       const compressed = canvas.toDataURL('image/jpeg', 0.7);
       appData.profiles[person].avatar = compressed;
-      saveData(appData);
-      saveToCloud(appData); // Force immediate cloud save
+      await saveData(appData);
       renderProfiles();
       showToast('✅ 头像已更新！');
     };
