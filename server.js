@@ -11,9 +11,7 @@ app.use(express.json({ limit: '50mb' }));
 // Read data
 function readData() {
   try {
-    if (fs.existsSync(DATA_FILE)) {
-      return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
-    }
+    if (fs.existsSync(DATA_FILE)) return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
   } catch (e) {}
   return null;
 }
@@ -23,27 +21,17 @@ function writeData(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
 }
 
-// GET /api/data - get all data
-app.get('/api/data', (req, res) => {
-  const data = readData();
-  res.json(data || {});
-});
+// API routes first
+app.get('/api/data', (req, res) => res.json(readData() || {}));
+app.post('/api/data', (req, res) => { writeData(req.body); res.json({ ok: true }); });
 
-// POST /api/data - save all data
-app.post('/api/data', (req, res) => {
-  writeData(req.body);
-  res.json({ ok: true });
-});
+// Serve public folder with index.html as default
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve static files (CSS, JS, images) but NOT index.html
-app.use(express.static(path.join(__dirname, 'public'), { index: false }));
-
-// All other routes → serve love.html
+// Fallback for SPA refresh
 app.get('*', (req, res) => {
-  if (req.path.startsWith('/api/')) return res.status(404).json({ error: 'Not found' });
-  res.sendFile(path.join(__dirname, 'public', 'love.html'));
+  if (req.path.startsWith('/api/')) return res.status(404).end();
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`💕 恋爱小屋启动！ http://localhost:${PORT}`);
-});
+app.listen(PORT, () => console.log(`💕 恋爱小屋启动！ http://localhost:${PORT}`));

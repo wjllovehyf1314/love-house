@@ -33,7 +33,20 @@
       "PowerShell(Start-Sleep 1; $r = Invoke-WebRequest -Uri \"http://localhost:3000/api/data\" -UseBasicParsing; $r.Content)",
       "PowerShell(Start-Process \"http://localhost:3000\")",
       "PowerShell(gh *)",
-      "PowerShell(winget install *)"
+      "PowerShell(winget install *)",
+      "PowerShell(gh auth *)",
+      "PowerShell(Start-Process \"https://github.com/login/device\")",
+      "PowerShell(gh repo *)",
+      "PowerShell(git *)",
+      "PowerShell(Start-Process \"https://render.com/deploy?repo=https://github.com/wjllovehyf1314/love-house\")",
+      "PowerShell($r = Invoke-WebRequest -Uri \"https://love-house-8yko.onrender.com/api/data\" -UseBasicParsing; $r.Content)",
+      "PowerShell($r = Invoke-WebRequest -Uri \"https://love-house-8yko.onrender.com/\" -UseBasicParsing; Write-Host \"Status: $\\($r.StatusCode\\)\"; Write-Host \"Content-Length: $\\($r.Content.Length\\)\")",
+      "PowerShell($r = Invoke-WebRequest -Uri \"https://love-house-8yko.onrender.com/api/data\" -UseBasicParsing -Method GET -Headers @{\"Accept\"=\"application/json\"}; Write-Host \"Status: $\\($r.StatusCode\\)\"; $r.Content)",
+      "PowerShell(Start-Process \"https://love-house-8yko.onrender.com\")",
+      "PowerShell($r = Invoke-WebRequest -Uri \"https://love-house-8yko.onrender.com/\" -UseBasicParsing; Write-Host \"Status: $\\($r.StatusCode\\)\"; Write-Host \"Size: $\\($r.Content.Length\\) bytes\")",
+      "PowerShell(gh api *)",
+      "PowerShell(Write-Host \"等待 Render 部署...\"; for \\($i = 0; $i -lt 12; $i++\\) { Start-Sleep 5; try { $r = Invoke-WebRequest -Uri \"https://love-house-8yko.onrender.com/\" -UseBasicParsing -TimeoutSec 10; if \\($r.StatusCode -eq 200\\) { Write-Host \"✅ 第$\\($i+1\\)次检查: 状态 $\\($r.StatusCode\\) - 修复成功！\"; break } } catch { Write-Host \"第$\\($i+1\\)次: 部署中...\" } })",
+      "PowerShell(Rename-Item *)"
     ]
   }
 }
