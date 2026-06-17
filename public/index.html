@@ -994,30 +994,35 @@ let saveData = async function(data) {
 
 function startCloudSync() {
   useCloud = true;
+  let pushingLocal = false; // Only push after user action
 
-  // 第一步：从云端拉数据（以云端为准）
+  // Step 1: Pull from cloud (NEVER push on load!)
   setTimeout(async () => {
     const cloudData = await loadFromCloud();
     if (cloudData && Object.keys(cloudData).length > 0) {
       const c = mergeWithDefaults(cloudData);
-      // Fix array-like objects from JSON
       for (const k of ['dishes','lotteryHistory','stories']) {
         if (c[k] && !Array.isArray(c[k])) c[k] = Object.values(c[k]);
       }
-      appData = c;
-      saveLocalData(appData);
-      refreshAllUI();
-      console.log('📥 从云端加载数据成功');
-    } else {
-      // Cloud empty, push local
-      await saveToCloud(appData);
-      console.log('📤 云端为空，已推送本地数据');
+      // Only update if cloud has real data
+      if (c.stories && c.stories.length > 0 || Object.keys(c.checkins || {}).length > 50) {
+        appData = c;
+        saveLocalData(appData);
+        refreshAllUI();
+        console.log('📥 从云端加载数据成功');
+        pushingLocal = true; // Allow sync now
+        return;
+      }
     }
-  }, 500);
+    // Cloud empty or sparse - that's OK, don't push
+    console.log('📭 云端暂无数据，等待用户操作');
+    pushingLocal = true;
+  }, 800);
 
-  // 第二步：每5秒检查云端是否有更新
+  // Step 2: Poll for cloud changes every 5s
   let lastJson = '';
   syncTimer = setInterval(async () => {
+    if (!pushingLocal) return;
     const cloudData = await loadFromCloud();
     if (!cloudData || Object.keys(cloudData).length === 0) return;
     const cloudJson = JSON.stringify(cloudData);
@@ -1035,7 +1040,7 @@ function startCloudSync() {
     }
   }, 5000);
 
-  console.log('☁️ 云同步启动（云端为主）');
+  console.log('☁️ 云同步启动（只拉不推，保护数据）');
 }
 
 function refreshAllUI() {

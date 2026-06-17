@@ -8,10 +8,11 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';
 const REPO_OWNER = 'wjllovehyf1314';
 const REPO_NAME = 'love-house';
 const DATA_PATH = 'data.json';
+const LOCAL_BACKUP = path.join(__dirname, 'data_backup.json');
 
 let cachedData = null;
 
-app.use(express.json({ limit: '50mb' }));
+app.use(express.json({ limit: '10mb' }));
 
 // === GitHub persistent storage ===
 const GITHUB_API = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_PATH}`;
@@ -19,21 +20,32 @@ const GITHUB_API = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/cont
 async function loadFromGitHub() {
   try {
     const res = await fetch(GITHUB_API, {
-      headers: GITHUB_TOKEN ? { Authorization: `Bearer ${GITHUB_TOKEN}` } : {},
+      headers: {
+        Authorization: GITHUB_TOKEN ? `Bearer ${GITHUB_TOKEN}` : '',
+        'User-Agent': 'love-house',
+        'Accept': 'application/vnd.github.v3+json',
+      },
     });
     if (!res.ok) return null;
     const json = await res.json();
     const content = Buffer.from(json.content, 'base64').toString('utf8');
-    return JSON.parse(content);
-  } catch (e) { return null; }
+    const data = JSON.parse(content);
+    // Backup locally
+    fs.writeFileSync(LOCAL_BACKUP, JSON.stringify(data), 'utf8');
+    return data;
+  } catch (e) { console.error('GitHub load error:', e.message); return null; }
 }
 
 async function saveToGitHub(data) {
-  if (!GITHUB_TOKEN) return false;
+  if (!GITHUB_TOKEN) {
+    // Without token, save to local backup only
+    fs.writeFileSync(LOCAL_BACKUP, JSON.stringify(data), 'utf8');
+    return true;
+  }
   try {
-    // Get current file to get SHA
+    // Get current SHA
     const getRes = await fetch(GITHUB_API, {
-      headers: { Authorization: `Bearer ${GITHUB_TOKEN}` },
+      headers: { Authorization: `Bearer ${GITHUB_TOKEN}`, 'User-Agent': 'love-house' },
     });
     let sha = '';
     if (getRes.ok) {
@@ -50,25 +62,57 @@ async function saveToGitHub(data) {
       headers: {
         Authorization: `Bearer ${GITHUB_TOKEN}`,
         'Content-Type': 'application/json',
+        'User-Agent': 'love-house',
       },
       body: JSON.stringify(body),
     });
+    if (putRes.ok) {
+      fs.writeFileSync(LOCAL_BACKUP, JSON.stringify(data), 'utf8');
+    }
     return putRes.ok;
-  } catch (e) { return false; }
+  } catch (e) { console.error('GitHub save error:', e.message); return false; }
+}
+
+// Load local backup on startup
+function loadLocalBackup() {
+  try {
+    if (fs.existsSync(LOCAL_BACKUP)) {
+      return JSON.parse(fs.readFileSync(LOCAL_BACKUP, 'utf8'));
+    }
+  } catch (e) {}
+  return null;
 }
 
 // === API routes ===
 app.get('/api/data', async (req, res) => {
-  // Try GitHub first, then cache
+  // 1. Try GitHub
   const ghData = await loadFromGitHub();
-  if (ghData) { cachedData = ghData; return res.json(ghData); }
-  if (cachedData) return res.json(cachedData);
-  res.json({});
+  if (ghData && Object.keys(ghData).length > 0) {
+    cachedData = ghData;
+    return res.json(ghData);
+  }
+  // 2. Try cache
+  if (cachedData && Object.keys(cachedData).length > 0) {
+    return res.json(cachedData);
+  }
+  // 3. Try local backup
+  const backup = loadLocalBackup();
+  if (backup && Object.keys(backup).length > 0) {
+    cachedData = backup;
+    return res.json(backup);
+  }
+  // 4. Nothing
+  res.json(null);
 });
 
 app.post('/api/data', async (req, res) => {
-  cachedData = req.body;
-  const saved = await saveToGitHub(req.body);
+  const data = req.body;
+  // Safety: only save if data has actual content (not empty)
+  if (!data || Object.keys(data).length === 0) {
+    return res.json({ ok: false, error: 'Refusing to save empty data' });
+  }
+  cachedData = data;
+  const saved = await saveToGitHub(data);
   res.json({ ok: saved });
 });
 
@@ -81,4 +125,21 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(PORT, () => console.log(`💕 恋爱小屋启动！ http://localhost:${PORT}`));
+// Startup: load from GitHub
+(async () => {
+  console.log('⏳ Loading data from GitHub...');
+  const ghData = await loadFromGitHub();
+  if (ghData && Object.keys(ghData).length > 0) {
+    cachedData = ghData;
+    console.log('✅ GitHub data loaded (' + JSON.stringify(ghData).length + ' bytes)');
+  } else {
+    const backup = loadLocalBackup();
+    if (backup) {
+      cachedData = backup;
+      console.log('⚠️ Using local backup (' + JSON.stringify(backup).length + ' bytes)');
+    } else {
+      console.log('⚠️ No data found, starting fresh');
+    }
+  }
+  app.listen(PORT, () => console.log(`💕 恋爱小屋启动！ http://localhost:${PORT}`));
+})();
