@@ -210,19 +210,33 @@
       "emoji": "🥦"
     }
   ],
-  "lotteryHistory": [],
-  "stories": [],
+  "lotteryHistory": [
+    {
+      "date": "2026-06-17",
+      "name": "煎饼果子 🥞",
+      "emoji": "🥞"
+    }
+  ],
+  "stories": [
+    {
+      "date": "2026-06-17",
+      "text": "111",
+      "images": [],
+      "video": null,
+      "comments": []
+    }
+  ],
   "profiles": {
     "wjl": {
       "name": "王俊龙",
       "avatar": "",
-      "birthday": "",
-      "zodiac": "",
-      "mbti": "",
-      "hobbies": "",
-      "favoriteFood": "",
-      "dream": "",
-      "wechat": ""
+      "birthday": "111",
+      "zodiac": "225",
+      "mbti": "33",
+      "hobbies": "44",
+      "favoriteFood": "66",
+      "dream": "55",
+      "wechat": "47"
     },
     "hyf": {
       "name": "贺一帆",
