@@ -1015,11 +1015,15 @@ function smartMerge(local, cloud) {
       if (!merged.checkins[d]) merged.checkins[d] = cloud.checkins[d];
     }
   }
-  // Merge arrays: use whichever is longer
+  // Merge arrays: use whichever has more data (more items or richer content)
   for (const arr of ['dishes', 'lotteryHistory', 'stories']) {
     const cArr = Array.isArray(cloud[arr]) ? cloud[arr] : Object.values(cloud[arr] || {});
     const lArr = Array.isArray(merged[arr]) ? merged[arr] : [];
-    if (cArr.length > lArr.length) merged[arr] = cArr;
+    const cSize = JSON.stringify(cArr).length;
+    const lSize = JSON.stringify(lArr).length;
+    // Prefer the version with more data (images etc)
+    if (cSize > lSize) merged[arr] = cArr;
+    else if (lSize > cSize) { /* keep local, it's richer */ }
   }
   return merged;
 }
@@ -1486,13 +1490,33 @@ function hideAddStoryForm() {
   document.getElementById('storyMedia').value = '';
 }
 
-function addStory() {
+// Compress image before saving
+function compressImage(file) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const maxSize = 800;
+      let w = img.width, h = img.height;
+      if (w > h) { if (w > maxSize) { h *= maxSize / w; w = maxSize; } }
+      else { if (h > maxSize) { w *= maxSize / h; h = maxSize; } }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', 0.6));
+    };
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+async function addStory() {
   const date = document.getElementById('storyDate').value;
   const text = document.getElementById('storyText').value.trim();
   const mediaInput = document.getElementById('storyMedia');
 
   if (!date) { showToast('请选择日期'); return; }
   if (!text) { showToast('请写下故事内容'); return; }
+
+  showToast('⏳ 正在处理图片...');
 
   const story = {
     date,
@@ -1503,32 +1527,19 @@ function addStory() {
   };
 
   const files = mediaInput.files;
-  if (files.length > 0) {
-    let processed = 0;
-    const totalFiles = files.length;
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const dataUrl = e.target.result;
-        if (file.type.startsWith('video/')) {
-          story.video = dataUrl;
-        } else if (file.type.startsWith('image/')) {
-          story.images.push(dataUrl);
-        }
-        processed++;
-        if (processed === totalFiles) {
-          finalizeAddStory(story);
-        }
-      };
-      reader.readAsDataURL(file);
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    if (file.type.startsWith('video/')) {
+      // Videos: keep small, use data URL directly (videos should be short clips)
+      const dataUrl = await new Promise(r => { const fr = new FileReader(); fr.onload = e => r(e.target.result); fr.readAsDataURL(file.slice(0, 2*1024*1024)); });
+      story.video = dataUrl;
+    } else if (file.type.startsWith('image/')) {
+      const compressed = await compressImage(file);
+      story.images.push(compressed);
     }
-
-    if (totalFiles === 0) finalizeAddStory(story);
-  } else {
-    finalizeAddStory(story);
   }
+
+  finalizeAddStory(story);
 }
 
 function finalizeAddStory(story) {
