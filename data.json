@@ -214,7 +214,13 @@
       "emoji": "🥦"
     }
   ],
-  "lotteryHistory": [],
+  "lotteryHistory": [
+    {
+      "date": "2026-06-21",
+      "name": "黄焖鸡米饭 🍚",
+      "emoji": "🍚"
+    }
+  ],
   "stories": [],
   "profiles": {
     "wjl": {
